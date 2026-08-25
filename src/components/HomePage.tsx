@@ -48,10 +48,7 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
       </div>
 
       <div className="about">
-        <div className="about-photo">
-          <Image src="/local-dorah.jpg" alt="Local de Dorah — Necochea 330, Resistencia" width={640} height={800} style={{ width: "100%", height: "auto" }} />
-        </div>
-        <div className="about-text">
+        <div className="about-intro about-text">
           <span className="eyebrow">Quiénes somos</span>
           <h2>Dorah</h2>
           <p>
@@ -77,6 +74,13 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
             Contamos con múltiples medios de pago: efectivo, transferencia bancaria, tarjetas de crédito hasta 3
             cuotas sin interés y créditos personales.
           </p>
+        </div>
+
+        <div className="about-photo">
+          <Image src="/local-dorah.jpg" alt="Local de Dorah — Necochea 330, Resistencia" width={640} height={800} style={{ width: "100%", height: "auto" }} />
+        </div>
+
+        <div className="about-rest about-text">
           <div className="addr-block">
             <div className="addr-line">
               📍 <span>Encontranos en <b>Necochea 330</b>, Resistencia, Chaco</span>
