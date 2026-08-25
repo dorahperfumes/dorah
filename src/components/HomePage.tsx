@@ -49,8 +49,7 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
 
       <div className="about">
         <div className="about-intro about-text">
-          <span className="eyebrow">Quiénes somos</span>
-          <h2>Dorah</h2>
+          <span className="eyebrow about-title">Quiénes Somos</span>
           <p>
             Somos una empresa dedicada a la venta y comercialización de perfumes y accesorios, ofreciendo productos
             seleccionados para quienes buscan calidad, variedad y una atención personalizada.

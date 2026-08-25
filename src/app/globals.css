@@ -185,8 +185,10 @@
   .about-intro{grid-area:intro;}
   .about-rest{grid-area:rest;}
   .about-text p{color:var(--ink-soft); line-height:1.85; font-size:1.02rem; margin-bottom:14px;}
-  .about-text h2{font-size:2.5rem; margin:2px 0 14px; color:var(--gold-600);}
-  .about-text > .eyebrow{font-size:0.72rem; letter-spacing:0.32em;}
+  .about-title{
+    display:block; font-family:'Cormorant Garamond', serif; text-transform:none; font-weight:500;
+    letter-spacing:0.04em; font-size:2.5rem; color:var(--gold-600); margin:2px 0 14px;
+  }
   .addr-block{
     margin-top:0; border:1px solid var(--line); background:var(--bg-elev); padding:18px 20px; border-radius:3px;
   }
