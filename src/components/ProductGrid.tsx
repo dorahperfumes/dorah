@@ -1,0 +1,84 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { Product } from "@/lib/types";
+import { useCart } from "@/lib/cart-context";
+import { BottleIcon, RingIcon, PlaceholderPhoto } from "./icons";
+
+function money(n?: string) {
+  return `$ ${n}`;
+}
+
+export default function ProductGrid({
+  title,
+  eyebrow,
+  description,
+  products,
+  searchPlaceholder,
+  isAccesorios = false,
+}: {
+  title: string;
+  eyebrow: string;
+  description: string;
+  products: Product[];
+  searchPlaceholder: string;
+  isAccesorios?: boolean;
+}) {
+  const [query, setQuery] = useState("");
+  const [addedKey, setAddedKey] = useState<string | null>(null);
+  const { addItem } = useCart();
+
+  const filtered = useMemo(
+    () => products.filter((p) => p.name.toLowerCase().includes(query.trim().toLowerCase())),
+    [products, query]
+  );
+
+  function handleAdd(p: Product) {
+    addItem({ key: p.id, name: p.name, brand: p.brand, price: p.price, category: p.category });
+    setAddedKey(p.id);
+    setTimeout(() => setAddedKey(null), 1200);
+  }
+
+  return (
+    <section className="page">
+      <div className="cat-header">
+        <span className="eyebrow">{eyebrow}</span>
+        <div className="divider left" style={{ maxWidth: 120 }}></div>
+        <h2>{title}</h2>
+        <p>{description}</p>
+      </div>
+      <div className="search-row">
+        <svg viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="text"
+          placeholder={searchPlaceholder}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
+      <div className="grid">
+        {filtered.map((p) => (
+          <div className="card" key={p.id}>
+            <PlaceholderPhoto icon={isAccesorios ? <RingIcon /> : <BottleIcon />} />
+            <div className="card-body">
+              <span className="brand">{p.brand}</span>
+              <h4>{p.name}</h4>
+              <span className="price">{money(p.price)}</span>
+              <button className={`card-cta${addedKey === p.id ? " added" : ""}`} onClick={() => handleAdd(p)}>
+                {addedKey === p.id ? "Agregado ✓" : "Agregar al carrito"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      {filtered.length === 0 && (
+        <div className="no-results" style={{ display: "block" }}>
+          No encontramos productos con ese nombre.
+        </div>
+      )}
+    </section>
+  );
+}
