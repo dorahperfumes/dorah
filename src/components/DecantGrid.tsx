@@ -17,7 +17,7 @@ function money(n?: string) {
 }
 
 function openProduct(id: string) {
-  window.open(`/perfumes/${id}`, "_blank", "noopener,noreferrer");
+  window.location.href = `/perfumes/${id}`;
 }
 
 export default function DecantGrid({ products }: { products: Product[] }) {
@@ -90,7 +90,7 @@ export default function DecantGrid({ products }: { products: Product[] }) {
               key={p.id}
               role="link"
               tabIndex={0}
-              aria-label={`Abrir ${p.name} en una pestaña nueva`}
+              aria-label={`Abrir ${p.name}`}
               onClick={() => openProduct(p.id)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
