@@ -77,12 +77,12 @@ function ProductDetailPage() {
         try {
           const sameCategory = await fetchPublicProducts(row.category);
           if (!cancelled) {
-            setRelated(
-              sameCategory
-                .filter((item) => item.id !== row.id)
-                .slice(0, 4)
-                .map(dbProductToSiteProduct)
-            );
+            const candidates = sameCategory.filter((item) => item.id !== row.id);
+            const relevant = row.gender
+              ? candidates.filter((item) => item.gender === row.gender)
+              : candidates;
+
+            setRelated(relevant.slice(0, 4).map(dbProductToSiteProduct));
           }
         } catch (error) {
           console.error("No se pudieron cargar productos relacionados:", error);
@@ -214,6 +214,14 @@ function ProductDetailPage() {
   }
 
   const whatsappHref = consultStockLink(product.name, isDecant ? size : undefined);
+  const relatedGridClass =
+    related.length === 1
+      ? `${styles.relatedGrid} ${styles.relatedGridOne}`
+      : related.length === 2
+        ? `${styles.relatedGrid} ${styles.relatedGridTwo}`
+        : related.length === 3
+          ? `${styles.relatedGrid} ${styles.relatedGridThree}`
+          : `${styles.relatedGrid} ${styles.relatedGridFour}`;
 
   return (
     <>
@@ -396,6 +404,14 @@ function ProductDetailPage() {
               <div className={styles.description}>{product.description}</div>
             )}
 
+            <div className={styles.availabilityNote}>
+              <span className={styles.availabilityDot} aria-hidden="true" />
+              <div>
+                <strong>Disponibilidad sujeta a stock</strong>
+                <span>Consultá y te confirmamos en minutos por WhatsApp.</span>
+              </div>
+            </div>
+
             {consult ? (
               <a
                 className={styles.primaryAction}
@@ -453,7 +469,7 @@ function ProductDetailPage() {
               <h2>Descubrí otras opciones</h2>
             </div>
 
-            <div className={styles.relatedGrid}>
+            <div className={relatedGridClass}>
               {related.map((item) => {
                 const image = item.images?.[0];
                 const relatedPrice = item.category === "decants" ? item.price5ml : item.price;

@@ -784,3 +784,218 @@
     padding: 0 12px;
   }
 }
+
+/* ===== FICHA V2.1: galería compacta + mejor móvil ===== */
+@media (min-width: 900px) {
+  .mainImage {
+    height: clamp(480px, 62vh, 650px);
+    aspect-ratio: auto;
+  }
+}
+
+.availabilityNote {
+  margin: -4px 0 20px;
+  padding: 12px 14px;
+  border: 1px solid rgba(107, 83, 34, 0.18);
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.availabilityDot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #4f7a4c;
+  box-shadow: 0 0 0 4px rgba(79, 122, 76, 0.1);
+}
+
+.availabilityNote strong,
+.availabilityNote span {
+  display: block;
+}
+
+.availabilityNote strong {
+  margin-bottom: 2px;
+  color: var(--ink);
+  font: 500 0.72rem "Jost", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.availabilityNote span {
+  color: rgba(28, 22, 16, 0.58);
+  font: 300 0.7rem/1.4 "Jost", sans-serif;
+}
+
+.relatedGrid {
+  justify-content: center;
+}
+
+.relatedGridOne {
+  grid-template-columns: minmax(230px, 290px);
+}
+
+.relatedGridTwo {
+  grid-template-columns: repeat(2, minmax(230px, 290px));
+}
+
+.relatedGridThree {
+  grid-template-columns: repeat(3, minmax(220px, 280px));
+}
+
+.relatedGridFour {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (hover: none), (pointer: coarse) {
+  .galleryArrow {
+    width: 44px;
+    height: 44px;
+    opacity: 0.94;
+  }
+
+  .galleryArrow:hover {
+    transform: translateY(-50%);
+  }
+
+  .primaryAction:hover {
+    background: #111;
+    border-color: #111;
+    color: #eadca9;
+  }
+}
+
+@media (max-width: 899px) {
+  .header {
+    padding-left: max(18px, env(safe-area-inset-left));
+    padding-right: max(18px, env(safe-area-inset-right));
+  }
+
+  .mainImage {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .relatedGridOne {
+    grid-template-columns: minmax(0, 320px);
+  }
+
+  .relatedGridTwo,
+  .relatedGridThree,
+  .relatedGridFour {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .topNavigation {
+    margin-bottom: 12px;
+  }
+
+  .breadcrumb {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .breadcrumb strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 48vw;
+  }
+
+  .productLayout {
+    gap: 24px;
+  }
+
+  .mainImage {
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .thumbnails {
+    gap: 9px;
+  }
+
+  .thumbnails button {
+    width: 72px;
+    height: 72px;
+    flex-basis: 72px;
+  }
+
+  .infoColumn h1 {
+    font-size: clamp(2.25rem, 12vw, 3rem);
+  }
+
+  .rule {
+    margin: 22px 0;
+  }
+
+  .description {
+    font-size: 0.93rem;
+    line-height: 1.72;
+    margin-bottom: 24px;
+  }
+
+  .availabilityNote {
+    margin-bottom: 16px;
+  }
+
+  .trustGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .trustGrid > div {
+    padding: 11px 8px;
+  }
+
+  .trustGrid strong {
+    font-size: 0.57rem;
+  }
+
+  .trustGrid span {
+    font-size: 0.58rem;
+  }
+
+  .relatedSection {
+    padding-top: 38px;
+  }
+
+  .relatedHeading {
+    margin-bottom: 22px;
+  }
+
+  .relatedGrid {
+    gap: 10px;
+  }
+
+  .relatedGridOne {
+    grid-template-columns: minmax(0, 280px);
+  }
+
+  .relatedCard h3 {
+    font-size: 1.18rem;
+  }
+
+  .relatedCard > span {
+    font-size: 0.56rem;
+  }
+
+  .relatedCard p {
+    font-size: 0.72rem;
+  }
+
+  .mobileActionBar {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+}
