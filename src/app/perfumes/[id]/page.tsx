@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import CartDrawer from "@/components/CartDrawer";
 import SiteFooter, { FloatingSocial } from "@/components/SiteFooter";
 import { CartProvider, useCart } from "@/lib/cart-context";
@@ -10,6 +10,7 @@ import { PHONE } from "@/lib/products";
 import {
   dbProductToSiteProduct,
   fetchPublicProductById,
+  fetchPublicProducts,
 } from "@/lib/products-db";
 import type { Product } from "@/lib/types";
 import { consultStockLink, needsConsult } from "@/lib/whatsapp";
@@ -35,15 +36,20 @@ function money(value?: string) {
 
 function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = String(params?.id ?? "");
   const { addItem, totalQty, openCart, isOpen, closeCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
+  const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [size, setSize] = useState<"5ml" | "10ml">("5ml");
   const [added, setAdded] = useState(false);
   const [shared, setShared] = useState(false);
+
+  const touchStartX = useRef<number | null>(null);
+  const ignoreClick = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -59,6 +65,7 @@ function ProductDetailPage() {
 
         if (!row) {
           setProduct(null);
+          setRelated([]);
           return;
         }
 
@@ -66,9 +73,27 @@ function ProductDetailPage() {
         setProduct(converted);
         setActiveImage(0);
         document.title = `${converted.name} | Dorah`;
+
+        try {
+          const sameCategory = await fetchPublicProducts(row.category);
+          if (!cancelled) {
+            setRelated(
+              sameCategory
+                .filter((item) => item.id !== row.id)
+                .slice(0, 4)
+                .map(dbProductToSiteProduct)
+            );
+          }
+        } catch (error) {
+          console.error("No se pudieron cargar productos relacionados:", error);
+          if (!cancelled) setRelated([]);
+        }
       } catch (error) {
         console.error("No se pudo cargar el producto:", error);
-        if (!cancelled) setProduct(null);
+        if (!cancelled) {
+          setProduct(null);
+          setRelated([]);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -97,6 +122,38 @@ function ProductDetailPage() {
   function nextImage() {
     if (images.length < 2) return;
     setActiveImage((current) => (current + 1) % images.length);
+  }
+
+  function previousImage() {
+    if (images.length < 2) return;
+    setActiveImage((current) => (current - 1 + images.length) % images.length);
+  }
+
+  function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
+    if (touchStartX.current == null || images.length < 2) return;
+
+    const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
+    const delta = endX - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(delta) < 45) return;
+
+    ignoreClick.current = true;
+    if (delta < 0) nextImage();
+    else previousImage();
+
+    window.setTimeout(() => {
+      ignoreClick.current = false;
+    }, 250);
+  }
+
+  function handleMainImageClick() {
+    if (ignoreClick.current) return;
+    nextImage();
   }
 
   function handleAddToCart() {
@@ -156,6 +213,8 @@ function ProductDetailPage() {
     );
   }
 
+  const whatsappHref = consultStockLink(product.name, isDecant ? size : undefined);
+
   return (
     <>
       <header className={styles.header}>
@@ -164,7 +223,12 @@ function ProductDetailPage() {
         </Link>
 
         <div className={styles.headerActions}>
-          <button type="button" className={styles.cartButton} onClick={openCart} aria-label="Abrir carrito">
+          <button
+            type="button"
+            className={styles.cartButton}
+            onClick={openCart}
+            aria-label="Abrir carrito"
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L20 8H6" />
               <circle cx="9" cy="20" r="1" />
@@ -175,7 +239,9 @@ function ProductDetailPage() {
 
           <a
             className={styles.whatsappHeader}
-            href={`https://wa.me/${PHONE}?text=${encodeURIComponent("Hola! Te escribo desde la web de Dorah")}`}
+            href={`https://wa.me/${PHONE}?text=${encodeURIComponent(
+              "Hola! Te escribo desde la web de Dorah"
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -188,48 +254,90 @@ function ProductDetailPage() {
       <CartDrawer />
 
       <main className={styles.page}>
-        <nav className={styles.breadcrumb} aria-label="Migas de pan">
-          <Link href="/">Dorah</Link>
-          <span>/</span>
-          <span>{CATEGORY_LABELS[product.category] ?? "Productos"}</span>
-          <span>/</span>
-          <strong>{product.name}</strong>
-        </nav>
+        <div className={styles.topNavigation}>
+          <button type="button" className={styles.backButton} onClick={() => router.back()}>
+            <span aria-hidden="true">←</span> VOLVER
+          </button>
+
+          <nav className={styles.breadcrumb} aria-label="Migas de pan">
+            <Link href="/">Dorah</Link>
+            <span>/</span>
+            <span>{CATEGORY_LABELS[product.category] ?? "Productos"}</span>
+            <span>/</span>
+            <strong>{product.name}</strong>
+          </nav>
+        </div>
 
         <section className={styles.productLayout}>
           <div className={styles.galleryColumn}>
-            <button
-              type="button"
-              className={`${styles.mainImage} ${images.length > 1 ? styles.mainImageClickable : ""}`}
-              onClick={nextImage}
-              disabled={images.length < 2}
-              aria-label={images.length > 1 ? "Ver la siguiente foto" : "Foto del producto"}
+            <div
+              className={styles.mainImage}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             >
-              {images.length > 0 ? (
-                <img
-                  src={images[activeImage]}
-                  alt={`${product.name} - foto ${activeImage + 1}`}
-                />
-              ) : (
-                <div className={styles.noPhoto}>
-                  <svg viewBox="0 0 100 160" aria-hidden="true">
-                    <rect x="28" y="35" width="44" height="95" rx="8" />
-                    <rect x="38" y="18" width="24" height="18" rx="3" />
-                    <path d="M50 65l12 12-12 12-12-12z" />
-                  </svg>
-                  <span>Foto a cargar</span>
-                </div>
-              )}
+              <div
+                className={images.length > 1 ? styles.photoClickArea : styles.photoStatic}
+                role={images.length > 1 ? "button" : undefined}
+                tabIndex={images.length > 1 ? 0 : undefined}
+                onClick={images.length > 1 ? handleMainImageClick : undefined}
+                onKeyDown={(event) => {
+                  if (images.length > 1 && (event.key === "Enter" || event.key === " ")) {
+                    event.preventDefault();
+                    nextImage();
+                  }
+                }}
+                aria-label={images.length > 1 ? "Ver la siguiente foto" : undefined}
+              >
+                {images.length > 0 ? (
+                  <img
+                    src={images[activeImage]}
+                    alt={`${product.name} - foto ${activeImage + 1}`}
+                  />
+                ) : (
+                  <div className={styles.noPhoto}>
+                    <svg viewBox="0 0 100 160" aria-hidden="true">
+                      <rect x="28" y="35" width="44" height="95" rx="8" />
+                      <rect x="38" y="18" width="24" height="18" rx="3" />
+                      <path d="M50 65l12 12-12 12-12-12z" />
+                    </svg>
+                    <span>Foto a cargar</span>
+                  </div>
+                )}
+              </div>
 
               {images.length > 1 && (
                 <>
+                  <button
+                    type="button"
+                    className={`${styles.galleryArrow} ${styles.galleryArrowLeft}`}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      previousImage();
+                    }}
+                    aria-label="Foto anterior"
+                  >
+                    ‹
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`${styles.galleryArrow} ${styles.galleryArrowRight}`}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      nextImage();
+                    }}
+                    aria-label="Foto siguiente"
+                  >
+                    ›
+                  </button>
+
                   <span className={styles.imageCounter}>
                     {activeImage + 1}/{images.length}
                   </span>
-                  <span className={styles.nextPhotoHint}>Clic para ver la siguiente foto</span>
+                  <span className={styles.nextPhotoHint}>Clic o deslizá para cambiar la foto</span>
                 </>
               )}
-            </button>
+            </div>
 
             {images.length > 1 && (
               <div className={styles.thumbnails}>
@@ -281,7 +389,7 @@ function ProductDetailPage() {
             )}
 
             <div className={consult ? styles.consultPrice : styles.price}>
-              {consult ? "Consultar precio" : money(selectedPrice)}
+              {consult ? "Consultar stock" : money(selectedPrice)}
             </div>
 
             {product.description && (
@@ -291,7 +399,7 @@ function ProductDetailPage() {
             {consult ? (
               <a
                 className={styles.primaryAction}
-                href={consultStockLink(product.name, isDecant ? size : undefined)}
+                href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -307,6 +415,21 @@ function ProductDetailPage() {
               </button>
             )}
 
+            <div className={styles.trustGrid}>
+              <div>
+                <strong>100% originales</strong>
+                <span>Productos seleccionados</span>
+              </div>
+              <div>
+                <strong>Envíos</strong>
+                <span>Coordinamos tu entrega</span>
+              </div>
+              <div>
+                <strong>Atención directa</strong>
+                <span>Te asesoramos por WhatsApp</span>
+              </div>
+            </div>
+
             <p className={styles.paymentNote}>
               El pago y el envío se coordinan por WhatsApp una vez armado tu pedido en el carrito.
             </p>
@@ -318,11 +441,59 @@ function ProductDetailPage() {
                 <circle cx="18" cy="19" r="2.5" />
                 <path d="M8.2 10.8l7.5-4.4M8.2 13.2l7.5 4.4" />
               </svg>
-              {shared ? "LINK COPIADO ✓" : "COMPARTIR"}
+              {shared ? "LINK COPIADO ✓" : "COMPARTIR PRODUCTO"}
             </button>
           </div>
         </section>
+
+        {related.length > 0 && (
+          <section className={styles.relatedSection}>
+            <div className={styles.relatedHeading}>
+              <span>TAMBIÉN TE PUEDE GUSTAR</span>
+              <h2>Descubrí otras opciones</h2>
+            </div>
+
+            <div className={styles.relatedGrid}>
+              {related.map((item) => {
+                const image = item.images?.[0];
+                const relatedPrice = item.category === "decants" ? item.price5ml : item.price;
+                const relatedConsult = needsConsult(relatedPrice);
+
+                return (
+                  <Link key={item.id} href={`/perfumes/${item.id}`} className={styles.relatedCard}>
+                    <div className={styles.relatedImage}>
+                      {image ? (
+                        <img src={image} alt={item.name} />
+                      ) : (
+                        <div className={styles.relatedPlaceholder}>DORAH</div>
+                      )}
+                    </div>
+                    <span>{item.brand}</span>
+                    <h3>{item.name}</h3>
+                    <p>{relatedConsult ? "Consultar stock" : money(relatedPrice)}</p>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </main>
+
+      <div className={styles.mobileActionBar}>
+        <div>
+          <span>{consult ? "DISPONIBILIDAD" : "PRECIO"}</span>
+          <strong>{consult ? "Consultar stock" : money(selectedPrice)}</strong>
+        </div>
+        {consult ? (
+          <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+            WHATSAPP
+          </a>
+        ) : (
+          <button type="button" onClick={handleAddToCart}>
+            {added ? "AGREGADO ✓" : "AGREGAR"}
+          </button>
+        )}
+      </div>
 
       <SiteFooter />
       <FloatingSocial />

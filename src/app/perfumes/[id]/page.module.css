@@ -76,14 +76,37 @@
 
 .page {
   min-height: 72vh;
-  padding: 34px 6vw 90px;
+  padding: 28px 6vw 100px;
   background: var(--bg);
   color: var(--ink);
 }
 
-.breadcrumb {
+.topNavigation {
   max-width: 1260px;
   margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.backButton {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--gold-700);
+  cursor: pointer;
+  font: 500 0.7rem "Jost", sans-serif;
+  letter-spacing: 0.13em;
+}
+
+.backButton span {
+  font-size: 1rem;
+  margin-right: 5px;
+}
+
+.breadcrumb {
+  min-width: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -120,35 +143,78 @@
   aspect-ratio: 1 / 1;
   border: 1px solid rgba(107, 83, 34, 0.18);
   background: #fff;
-  padding: 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  appearance: none;
+  touch-action: pan-y;
 }
 
-.mainImage:disabled {
-  opacity: 1;
+.photoClickArea,
+.photoStatic {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
 }
 
-.mainImageClickable {
+.photoClickArea {
   cursor: pointer;
 }
 
-.mainImage img {
+.photoClickArea img,
+.photoStatic img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
   padding: 18px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.galleryArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(107, 83, 34, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--gold-700);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.galleryArrow:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.galleryArrowLeft {
+  left: 16px;
+}
+
+.galleryArrowRight {
+  right: 16px;
 }
 
 .imageCounter {
   position: absolute;
   right: 16px;
   bottom: 16px;
+  z-index: 4;
   padding: 5px 10px;
   border-radius: 999px;
   background: rgba(18, 15, 10, 0.78);
@@ -160,6 +226,7 @@
   position: absolute;
   left: 16px;
   bottom: 16px;
+  z-index: 4;
   padding: 6px 10px;
   background: rgba(255, 255, 255, 0.9);
   color: var(--gold-700);
@@ -193,6 +260,7 @@
   margin-top: 14px;
   overflow-x: auto;
   padding-bottom: 4px;
+  scrollbar-width: thin;
 }
 
 .thumbnails button {
@@ -306,6 +374,39 @@
   color: #fff;
 }
 
+.trustGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-top: 24px;
+  border: 1px solid rgba(107, 83, 34, 0.18);
+  background: rgba(107, 83, 34, 0.18);
+}
+
+.trustGrid > div {
+  min-width: 0;
+  padding: 14px 12px;
+  background: rgba(255, 255, 255, 0.27);
+}
+
+.trustGrid strong,
+.trustGrid span {
+  display: block;
+}
+
+.trustGrid strong {
+  margin-bottom: 4px;
+  color: var(--ink);
+  font: 500 0.66rem "Jost", sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.trustGrid span {
+  color: rgba(28, 22, 16, 0.56);
+  font: 300 0.68rem/1.35 "Jost", sans-serif;
+}
+
 .paymentNote {
   margin: 14px 0 24px;
   color: rgba(28, 22, 16, 0.62);
@@ -365,6 +466,98 @@
   background: #17140f;
   border-color: #17140f;
   color: #eadca9;
+}
+
+.relatedSection {
+  max-width: 1260px;
+  margin: 100px auto 0;
+  padding-top: 48px;
+  border-top: 1px solid rgba(107, 83, 34, 0.2);
+}
+
+.relatedHeading {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.relatedHeading span {
+  color: var(--gold-500);
+  font: 500 0.67rem "Jost", sans-serif;
+  letter-spacing: 0.18em;
+}
+
+.relatedHeading h2 {
+  margin: 8px 0 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2.2rem, 4vw, 3.3rem);
+  font-weight: 500;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.relatedCard {
+  min-width: 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.relatedImage {
+  aspect-ratio: 1 / 1.1;
+  margin-bottom: 14px;
+  border: 1px solid rgba(107, 83, 34, 0.15);
+  background: #fff;
+  overflow: hidden;
+}
+
+.relatedImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+  transition: transform 0.25s ease;
+}
+
+.relatedCard:hover .relatedImage img {
+  transform: scale(1.025);
+}
+
+.relatedPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--gold-500);
+  font: 500 0.75rem "Jost", sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.relatedCard > span {
+  color: var(--gold-500);
+  font: 500 0.62rem "Jost", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.relatedCard h3 {
+  margin: 5px 0 7px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.relatedCard p {
+  margin: 0;
+  color: var(--gold-700);
+  font: 400 0.8rem "Jost", sans-serif;
+}
+
+.mobileActionBar {
+  display: none;
 }
 
 .loading,
@@ -428,6 +621,12 @@
   }
 }
 
+@media (max-width: 1050px) {
+  .relatedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 899px) {
   .header {
     min-height: 72px;
@@ -443,11 +642,21 @@
   }
 
   .page {
-    padding: 22px 18px 60px;
+    padding: 18px 18px 125px;
+  }
+
+  .topNavigation {
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .backButton {
+    margin-bottom: 12px;
   }
 
   .breadcrumb {
-    margin-bottom: 18px;
+    gap: 6px;
+    font-size: 0.66rem;
   }
 
   .productLayout {
@@ -455,8 +664,23 @@
     gap: 30px;
   }
 
-  .mainImage img {
+  .photoClickArea img,
+  .photoStatic img {
     padding: 8px;
+  }
+
+  .galleryArrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1.75rem;
+  }
+
+  .galleryArrowLeft {
+    left: 10px;
+  }
+
+  .galleryArrowRight {
+    right: 10px;
   }
 
   .nextPhotoHint {
@@ -465,5 +689,98 @@
 
   .infoColumn h1 {
     font-size: 2.7rem;
+  }
+
+  .trustGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .relatedSection {
+    margin-top: 70px;
+  }
+
+  .relatedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .relatedCard h3 {
+    font-size: 1.25rem;
+  }
+
+  .mobileActionBar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 55;
+    min-height: 72px;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(107, 83, 34, 0.22);
+    background: rgba(246, 239, 223, 0.97);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.08);
+  }
+
+  .mobileActionBar > div {
+    min-width: 0;
+  }
+
+  .mobileActionBar span,
+  .mobileActionBar strong {
+    display: block;
+  }
+
+  .mobileActionBar span {
+    margin-bottom: 2px;
+    color: var(--gold-500);
+    font: 500 0.55rem "Jost", sans-serif;
+    letter-spacing: 0.12em;
+  }
+
+  .mobileActionBar strong {
+    max-width: 42vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ink);
+    font: 600 0.88rem "Jost", sans-serif;
+  }
+
+  .mobileActionBar a,
+  .mobileActionBar button {
+    min-width: 132px;
+    height: 46px;
+    padding: 0 16px;
+    border: 1px solid #111;
+    background: #111;
+    color: #eadca9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    font: 500 0.66rem "Jost", sans-serif;
+    letter-spacing: 0.1em;
+  }
+}
+
+@media (max-width: 520px) {
+  .relatedGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .relatedImage {
+    aspect-ratio: 1 / 1.15;
+  }
+
+  .mobileActionBar a,
+  .mobileActionBar button {
+    min-width: 118px;
+    padding: 0 12px;
   }
 }
