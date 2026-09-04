@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CartProvider, useCart } from "@/lib/cart-context";
 import Topbar from "@/components/Topbar";
 import Drawer from "@/components/Drawer";
@@ -10,7 +10,9 @@ import ProductGrid from "@/components/ProductGrid";
 import DecantGrid from "@/components/DecantGrid";
 import SiteFooter, { FloatingSocial } from "@/components/SiteFooter";
 import { PageId } from "@/components/PageShell";
-import { arabes, disenador, decants, accesorios } from "@/lib/products";
+import { arabes as demoArabes, disenador as demoDisenador, decants as demoDecants, accesorios as demoAccesorios } from "@/lib/products";
+import { Product } from "@/lib/types";
+import { fetchPublicProducts, dbProductToSiteProduct } from "@/lib/products-db";
 
 function Overlay({ show, onClick }: { show: boolean; onClick: () => void }) {
   return <div className={`overlay${show ? " show" : ""}`} onClick={onClick}></div>;
@@ -20,6 +22,33 @@ function DorahApp() {
   const [page, setPage] = useState<PageId>("inicio");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { isOpen: cartOpen, closeCart } = useCart();
+
+  const [arabes, setArabes] = useState<Product[]>(demoArabes);
+  const [disenador, setDisenador] = useState<Product[]>(demoDisenador);
+  const [decants, setDecants] = useState<Product[]>(demoDecants);
+  const [accesorios, setAccesorios] = useState<Product[]>(demoAccesorios);
+
+  useEffect(() => {
+    // Trae los productos reales cargados desde el panel de admin (Supabase).
+    // Si una categoría todavía no tiene productos cargados, se mantienen
+    // los de ejemplo para que la sección nunca se vea vacía.
+    (async () => {
+      try {
+        const [a, d, dc, ac] = await Promise.all([
+          fetchPublicProducts("arabes"),
+          fetchPublicProducts("disenador"),
+          fetchPublicProducts("decants"),
+          fetchPublicProducts("accesorios"),
+        ]);
+        if (a.length) setArabes(a.map(dbProductToSiteProduct));
+        if (d.length) setDisenador(d.map(dbProductToSiteProduct));
+        if (dc.length) setDecants(dc.map(dbProductToSiteProduct));
+        if (ac.length) setAccesorios(ac.map(dbProductToSiteProduct));
+      } catch (err) {
+        console.error("No se pudieron cargar los productos de Supabase, se muestran los de ejemplo.", err);
+      }
+    })();
+  }, []);
 
   function goTo(p: PageId) {
     setPage(p);

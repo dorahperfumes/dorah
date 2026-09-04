@@ -20,7 +20,24 @@ export function RingIcon() {
   );
 }
 
-export function PlaceholderPhoto({ icon }: { icon: React.ReactNode }) {
+export function PlaceholderPhoto({
+  icon,
+  images,
+  alt,
+}: {
+  icon: React.ReactNode;
+  images?: string[] | null;
+  alt?: string;
+}) {
+  if (images && images.length > 0) {
+    return (
+      <div className="card-photo has-image">
+        {/* Fotos reales: se ven completas (sin recortar) y livianas en cualquier celular */}
+        <img src={images[0]} alt={alt || ""} loading="lazy" />
+        {images.length > 1 && <span className="photo-count">1/{images.length}</span>}
+      </div>
+    );
+  }
   return (
     <div className="card-photo">
       {icon}

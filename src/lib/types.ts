@@ -1,4 +1,5 @@
 export type Category = "arabes" | "disenador" | "decants" | "accesorios";
+export type Gender = "hombre" | "mujer" | "unisex";
 
 export interface Product {
   id: string;
@@ -8,6 +9,9 @@ export interface Product {
   price?: string;
   price5ml?: string;
   price10ml?: string;
+  images?: string[];
+  description?: string | null;
+  gender?: Gender | null;
 }
 
 export interface CartItem {
