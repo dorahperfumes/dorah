@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart-context";
 import { BottleIcon, PlaceholderPhoto } from "./icons";
-import ProductDetailModal from "./ProductDetailModal";
 import { consultStockLink, needsConsult } from "@/lib/whatsapp";
 
 const GENDER_LABELS: Record<string, string> = {
@@ -17,11 +16,14 @@ function money(n?: string) {
   return `$ ${Number(n).toLocaleString("es-AR")}`;
 }
 
+function openProduct(id: string) {
+  window.open(`/perfumes/${id}`, "_blank", "noopener,noreferrer");
+}
+
 export default function DecantGrid({ products }: { products: Product[] }) {
   const [query, setQuery] = useState("");
   const [sizes, setSizes] = useState<Record<string, "5" | "10">>({});
   const [addedKey, setAddedKey] = useState<string | null>(null);
-  const [detailProduct, setDetailProduct] = useState<Product | null>(null);
   const { addItem } = useCart();
 
   const filtered = useMemo(
@@ -33,11 +35,20 @@ export default function DecantGrid({ products }: { products: Product[] }) {
     return sizes[id] ?? "5";
   }
 
-  function handleAdd(p: Product, forcedSize?: "5ml" | "10ml") {
-    const size = forcedSize ? (forcedSize.replace("ml", "") as "5" | "10") : sizeFor(p.id);
+  function handleAdd(p: Product) {
+    const size = sizeFor(p.id);
     const price = size === "5" ? p.price5ml : p.price10ml;
     const key = `${p.id}-${size}ml`;
-    addItem({ key, name: p.name, brand: p.brand, price, size: `${size}ml`, category: "decants" });
+
+    addItem({
+      key,
+      name: p.name,
+      brand: p.brand,
+      price,
+      size: `${size}ml`,
+      category: "decants",
+    });
+
     setAddedKey(key);
     setTimeout(() => setAddedKey(null), 1200);
   }
@@ -48,8 +59,11 @@ export default function DecantGrid({ products }: { products: Product[] }) {
         <span className="eyebrow">Formato especial</span>
         <div className="divider left" style={{ maxWidth: 120 }}></div>
         <h2>Decants</h2>
-        <p>La misma fragancia, en frascos de 5ml o 10ml. Ideal para probar antes de invertir en el frasco completo.</p>
+        <p>
+          La misma fragancia, en frascos de 5ml o 10ml. Ideal para probar antes de invertir en el frasco completo.
+        </p>
       </div>
+
       <div className="search-row">
         <svg viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="7" />
@@ -62,19 +76,36 @@ export default function DecantGrid({ products }: { products: Product[] }) {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
+
       <div className="grid">
         {filtered.map((p) => {
           const size = sizeFor(p.id);
           const price = size === "5" ? p.price5ml : p.price10ml;
           const cartKey = `${p.id}-${size}ml`;
           const consult = needsConsult(price);
+
           return (
-            <div className="card" key={p.id} onClick={() => setDetailProduct(p)}>
+            <div
+              className="card"
+              key={p.id}
+              role="link"
+              tabIndex={0}
+              aria-label={`Abrir ${p.name} en una pestaña nueva`}
+              onClick={() => openProduct(p.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openProduct(p.id);
+                }
+              }}
+            >
               <PlaceholderPhoto icon={<BottleIcon />} images={p.images} alt={p.name} />
+
               <div className="card-body">
                 {p.gender && <span className="gender-tag">{GENDER_LABELS[p.gender]}</span>}
                 <span className="brand">{p.brand}</span>
                 <h4>{p.name}</h4>
+
                 <div className="size-toggle" onClick={(e) => e.stopPropagation()}>
                   <button
                     className={size === "5" ? "active" : ""}
@@ -89,10 +120,13 @@ export default function DecantGrid({ products }: { products: Product[] }) {
                     10ml
                   </button>
                 </div>
+
                 {consult ? (
                   <a
                     className="price size-price consult-link"
                     href={consultStockLink(p.name, `${size}ml`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                   >
                     Consultar stock
@@ -100,10 +134,13 @@ export default function DecantGrid({ products }: { products: Product[] }) {
                 ) : (
                   <span className="price size-price">{money(price)}</span>
                 )}
+
                 {consult ? (
                   <a
                     className="card-cta"
                     href={consultStockLink(p.name, `${size}ml`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                   >
                     Consultar por WhatsApp
@@ -124,22 +161,11 @@ export default function DecantGrid({ products }: { products: Product[] }) {
           );
         })}
       </div>
+
       {filtered.length === 0 && (
         <div className="no-results" style={{ display: "block" }}>
           No encontramos productos con ese nombre.
         </div>
-      )}
-
-      {detailProduct && (
-        <ProductDetailModal
-          product={detailProduct}
-          isDecant
-          onClose={() => setDetailProduct(null)}
-          onAddToCart={(size) => {
-            handleAdd(detailProduct, size);
-            setDetailProduct(null);
-          }}
-        />
       )}
     </section>
   );

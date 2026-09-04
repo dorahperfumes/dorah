@@ -110,3 +110,16 @@ export function dbProductToSiteProduct(p: DBProduct): {
     gender: p.gender,
   };
 }
+
+/** Obtiene un producto público activo por su ID. */
+export async function fetchPublicProductById(id: string): Promise<DBProduct | null> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", id)
+    .eq("active", true)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as DBProduct | null;
+}
