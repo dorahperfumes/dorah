@@ -117,17 +117,7 @@ export default function ProductGrid({
           <span className="brand">{p.brand}</span>
           <h4>{p.name}</h4>
 
-          {consult ? (
-            <a
-              className="price consult-link"
-              href={consultStockLink(p.name)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Consultar stock
-            </a>
-          ) : (
+          {!consult && (
             <span className="price">{money(p.price)}</span>
           )}
 

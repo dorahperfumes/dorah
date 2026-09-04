@@ -128,17 +128,7 @@ export default function DecantGrid({ products }: { products: Product[] }) {
             </button>
           </div>
 
-          {consult ? (
-            <a
-              className="price size-price consult-link"
-              href={consultStockLink(p.name, `${size}ml`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Consultar stock
-            </a>
-          ) : (
+          {!consult && (
             <span className="price size-price">{money(price)}</span>
           )}
 
