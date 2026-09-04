@@ -396,9 +396,9 @@ function ProductDetailPage() {
               </div>
             )}
 
-            <div className={consult ? styles.consultPrice : styles.price}>
-              {consult ? "Consultar stock" : money(selectedPrice)}
-            </div>
+            {!consult && (
+              <div className={styles.price}>{money(selectedPrice)}</div>
+            )}
 
             {product.description && (
               <div className={styles.description}>{product.description}</div>
@@ -419,7 +419,7 @@ function ProductDetailPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                CONSULTAR STOCK POR WHATSAPP
+                CONSULTAR POR WHATSAPP
               </a>
             ) : (
               <button
@@ -486,7 +486,7 @@ function ProductDetailPage() {
                     </div>
                     <span>{item.brand}</span>
                     <h3>{item.name}</h3>
-                    <p>{relatedConsult ? "Consultar stock" : money(relatedPrice)}</p>
+                    {!relatedConsult && <p>{money(relatedPrice)}</p>}
                   </Link>
                 );
               })}
@@ -498,7 +498,7 @@ function ProductDetailPage() {
       <div className={styles.mobileActionBar}>
         <div>
           <span>{consult ? "DISPONIBILIDAD" : "PRECIO"}</span>
-          <strong>{consult ? "Consultar stock" : money(selectedPrice)}</strong>
+          <strong>{consult ? "Por WhatsApp" : money(selectedPrice)}</strong>
         </div>
         {consult ? (
           <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
