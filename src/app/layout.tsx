@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import PWARegister from "@/components/PWARegister";
 import "./globals.css";
 
 const SITE_URL = "https://dorah-murex.vercel.app";
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   description:
     "Perfumes árabes, perfumes de diseñador, decants y accesorios. Consultá disponibilidad y realizá tu pedido por WhatsApp.",
   applicationName: "Dorah",
+  manifest: "/manifest.webmanifest",
   keywords: [
     "Dorah",
     "perfumes",
@@ -46,6 +48,16 @@ export const metadata: Metadata = {
       "Perfumes árabes, de diseñador, decants y accesorios. Pedidos y consultas por WhatsApp.",
     images: ["/dorah-logo.png"],
   },
+  appleWebApp: {
+    capable: true,
+    title: "Dorah",
+    statusBarStyle: "black",
+  },
+  formatDetection: {
+    telephone: false,
+    address: false,
+    email: false,
+  },
   robots: {
     index: true,
     follow: true,
@@ -53,17 +65,21 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f6efdf",
+  themeColor: "#0c0a08",
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
   viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es-AR">
-      <body>{children}</body>
+      <body>
+        <PWARegister />
+        {children}
+      </body>
     </html>
   );
 }
