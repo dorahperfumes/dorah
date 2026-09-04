@@ -10,29 +10,42 @@ import ProductGrid from "@/components/ProductGrid";
 import DecantGrid from "@/components/DecantGrid";
 import SiteFooter, { FloatingSocial } from "@/components/SiteFooter";
 import { PageId } from "@/components/PageShell";
-import { arabes as demoArabes, disenador as demoDisenador, decants as demoDecants, accesorios as demoAccesorios } from "@/lib/products";
 import { Product } from "@/lib/types";
-import { fetchPublicProducts, dbProductToSiteProduct } from "@/lib/products-db";
+import {
+  fetchPublicProducts,
+  dbProductToSiteProduct,
+} from "@/lib/products-db";
 
-function Overlay({ show, onClick }: { show: boolean; onClick: () => void }) {
-  return <div className={`overlay${show ? " show" : ""}`} onClick={onClick}></div>;
+function Overlay({
+  show,
+  onClick,
+}: {
+  show: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={`overlay${show ? " show" : ""}`}
+      onClick={onClick}
+    ></div>
+  );
 }
 
 function DorahApp() {
   const [page, setPage] = useState<PageId>("inicio");
   const [drawerOpen, setDrawerOpen] = useState(false);
+
   const { isOpen: cartOpen, closeCart } = useCart();
 
-  const [arabes, setArabes] = useState<Product[]>(demoArabes);
-  const [disenador, setDisenador] = useState<Product[]>(demoDisenador);
-  const [decants, setDecants] = useState<Product[]>(demoDecants);
-  const [accesorios, setAccesorios] = useState<Product[]>(demoAccesorios);
+  // La web empieza sin productos de ejemplo.
+  // Todo lo que se muestra viene exclusivamente de Supabase.
+  const [arabes, setArabes] = useState<Product[]>([]);
+  const [disenador, setDisenador] = useState<Product[]>([]);
+  const [decants, setDecants] = useState<Product[]>([]);
+  const [accesorios, setAccesorios] = useState<Product[]>([]);
 
   useEffect(() => {
-    // Trae los productos reales cargados desde el panel de admin (Supabase).
-    // Si una categoría todavía no tiene productos cargados, se mantienen
-    // los de ejemplo para que la sección nunca se vea vacía.
-    (async () => {
+    async function loadProducts() {
       try {
         const [a, d, dc, ac] = await Promise.all([
           fetchPublicProducts("arabes"),
@@ -40,20 +53,34 @@ function DorahApp() {
           fetchPublicProducts("decants"),
           fetchPublicProducts("accesorios"),
         ]);
-        if (a.length) setArabes(a.map(dbProductToSiteProduct));
-        if (d.length) setDisenador(d.map(dbProductToSiteProduct));
-        if (dc.length) setDecants(dc.map(dbProductToSiteProduct));
-        if (ac.length) setAccesorios(ac.map(dbProductToSiteProduct));
+
+        setArabes(a.map(dbProductToSiteProduct));
+        setDisenador(d.map(dbProductToSiteProduct));
+        setDecants(dc.map(dbProductToSiteProduct));
+        setAccesorios(ac.map(dbProductToSiteProduct));
       } catch (err) {
-        console.error("No se pudieron cargar los productos de Supabase, se muestran los de ejemplo.", err);
+        console.error(
+          "No se pudieron cargar los productos desde Supabase.",
+          err
+        );
+
+        setArabes([]);
+        setDisenador([]);
+        setDecants([]);
+        setAccesorios([]);
       }
-    })();
+    }
+
+    loadProducts();
   }, []);
 
   function goTo(p: PageId) {
     setPage(p);
     setDrawerOpen(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   function closeAll() {
@@ -68,11 +95,24 @@ function DorahApp() {
         onLogoClick={() => goTo("inicio")}
         menuOpen={drawerOpen}
       />
-      <Overlay show={drawerOpen || cartOpen} onClick={closeAll} />
-      <Drawer open={drawerOpen} activePage={page} onNavigate={goTo} />
+
+      <Overlay
+        show={drawerOpen || cartOpen}
+        onClick={closeAll}
+      />
+
+      <Drawer
+        open={drawerOpen}
+        activePage={page}
+        onNavigate={goTo}
+      />
+
       <CartDrawer />
 
-      {page === "inicio" && <HomePage onNavigate={goTo} />}
+      {page === "inicio" && (
+        <HomePage onNavigate={goTo} />
+      )}
+
       {page === "arabes" && (
         <ProductGrid
           title="Perfumes Árabes"
@@ -82,6 +122,7 @@ function DorahApp() {
           searchPlaceholder="Buscar en Perfumes Árabes..."
         />
       )}
+
       {page === "disenador" && (
         <ProductGrid
           title="Perfumes de Diseñador"
@@ -91,7 +132,11 @@ function DorahApp() {
           searchPlaceholder="Buscar en Perfumes de Diseñador..."
         />
       )}
-      {page === "decants" && <DecantGrid products={decants} />}
+
+      {page === "decants" && (
+        <DecantGrid products={decants} />
+      )}
+
       {page === "accesorios" && (
         <ProductGrid
           title="Accesorios"
