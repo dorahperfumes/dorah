@@ -178,32 +178,44 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const waLink = useMemo(() => {
     if (cart.length === 0) return "#";
 
-    const lines = [
-      "Hola Dorah 👋 Quiero consultar este pedido:",
-      "",
-      ...cart.map((item) => {
-        const unitPrice = priceNumber(item.price);
-        const detail = item.size ? ` (${item.size})` : "";
-        const brand = item.brand ? ` — ${item.brand}` : "";
-        const itemTotal = unitPrice == null
-          ? "precio a confirmar"
-          : money(unitPrice * item.qty);
-
-        return `• ${item.name}${detail}${brand} × ${item.qty} — ${itemTotal}`;
-      }),
+    const lines: string[] = [
+      "Hola Dorah 👋",
+      "Quiero consultar este pedido:",
       "",
     ];
+
+    cart.forEach((item, index) => {
+      const unitPrice = priceNumber(item.price);
+      const size = item.size ? ` — ${item.size}` : "";
+      const brand = item.brand ? ` — ${item.brand}` : "";
+
+      lines.push(`*${item.name}${brand}${size}*`);
+      lines.push(`Cantidad: ${item.qty}`);
+
+      if (unitPrice == null) {
+        lines.push("Precio: A confirmar");
+      } else {
+        lines.push(`Precio unitario: ${money(unitPrice)}`);
+        lines.push(`Subtotal: ${money(unitPrice * item.qty)}`);
+      }
+
+      if (index < cart.length - 1) {
+        lines.push("");
+      }
+    });
+
+    lines.push("");
 
     if (subtotal > 0) {
       lines.push(
         hasUnknownPrices
-          ? `Subtotal de productos con precio: ${money(subtotal)}`
-          : `Total estimado: ${money(subtotal)}`
+          ? `*Subtotal conocido: ${money(subtotal)}*`
+          : `*Total estimado: ${money(subtotal)}*`
       );
     }
 
     if (hasUnknownPrices) {
-      lines.push("Hay productos con precio a confirmar.");
+      lines.push("Los productos sin precio se confirman al responder el mensaje.");
     }
 
     lines.push("", "¿Me confirman disponibilidad y total final?");
