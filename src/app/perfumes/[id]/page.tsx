@@ -216,6 +216,14 @@ function ProductDetailPage() {
   }
 
   const whatsappHref = consultStockLink(product.name, isDecant ? size : undefined);
+  const returnToCatalogHref = `/?section=${encodeURIComponent(product.category)}${
+    product.gender ? `&gender=${encodeURIComponent(product.gender)}` : ""
+  }`;
+
+  function returnToCatalog() {
+    router.push(returnToCatalogHref);
+  }
+
   const relatedGridClass =
     related.length === 1
       ? `${styles.relatedGrid} ${styles.relatedGridOne}`
@@ -265,14 +273,16 @@ function ProductDetailPage() {
 
       <main className={styles.page}>
         <div className={styles.topNavigation}>
-          <button type="button" className={styles.backButton} onClick={() => router.back()}>
+          <button type="button" className={styles.backButton} onClick={returnToCatalog}>
             <span aria-hidden="true">←</span> VOLVER
           </button>
 
           <nav className={styles.breadcrumb} aria-label="Migas de pan">
             <Link href="/">Dorah</Link>
             <span>/</span>
-            <span>{CATEGORY_LABELS[product.category] ?? "Productos"}</span>
+            <Link href={returnToCatalogHref}>
+              {CATEGORY_LABELS[product.category] ?? "Productos"}
+            </Link>
             <span>/</span>
             <strong>{product.name}</strong>
           </nav>

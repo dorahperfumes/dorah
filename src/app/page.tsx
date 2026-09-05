@@ -9,43 +9,73 @@ import HomePage from "@/components/HomePage";
 import ProductGrid from "@/components/ProductGrid";
 import DecantGrid from "@/components/DecantGrid";
 import SiteFooter, { FloatingSocial } from "@/components/SiteFooter";
-import { PageId } from "@/components/PageShell";
-import { Product } from "@/lib/types";
-import {
-  fetchPublicProducts,
-  dbProductToSiteProduct,
-} from "@/lib/products-db";
+import type { PageId } from "@/components/PageShell";
+import type { Product } from "@/lib/types";
+import { fetchPublicProducts, dbProductToSiteProduct } from "@/lib/products-db";
 
-function Overlay({
-  show,
-  onClick,
-}: {
-  show: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <div
-      className={`overlay${show ? " show" : ""}`}
-      onClick={onClick}
-    ></div>
-  );
+const VALID_PAGES: PageId[] = [
+  "inicio",
+  "arabes",
+  "disenador",
+  "decants",
+  "accesorios",
+];
+
+const VALID_GENDERS = new Set(["hombre", "mujer", "unisex", "otros"]);
+
+function Overlay({ show, onClick }: { show: boolean; onClick: () => void }) {
+  return <div className={`overlay${show ? " show" : ""}`} onClick={onClick}></div>;
 }
 
 function DorahApp() {
   const [page, setPage] = useState<PageId>("inicio");
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   const { isOpen: cartOpen, closeCart } = useCart();
 
-  // La web empieza sin productos de ejemplo.
-  // Todo lo que se muestra viene exclusivamente de Supabase.
   const [arabes, setArabes] = useState<Product[]>([]);
   const [disenador, setDisenador] = useState<Product[]>([]);
   const [decants, setDecants] = useState<Product[]>([]);
   const [accesorios, setAccesorios] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function loadProducts() {
+    // Si venimos desde la ficha de un producto, recuperamos la categoría anterior.
+    const params = new URLSearchParams(window.location.search);
+    const requestedSection = params.get("section") as PageId | null;
+    const requestedGender = params.get("gender");
+
+    if (requestedSection && VALID_PAGES.includes(requestedSection)) {
+      setPage(requestedSection);
+    }
+
+    if (requestedGender && VALID_GENDERS.has(requestedGender)) {
+      let attempts = 0;
+      let timer: number | undefined;
+
+      const scrollToPreviousGroup = () => {
+        const target = document.getElementById(`catalog-${requestedGender}`);
+
+        if (target) {
+          target.scrollIntoView({ block: "start", behavior: "auto" });
+          return;
+        }
+
+        attempts += 1;
+        if (attempts < 30) {
+          timer = window.setTimeout(scrollToPreviousGroup, 100);
+        }
+      };
+
+      timer = window.setTimeout(scrollToPreviousGroup, 80);
+
+      return () => {
+        if (timer) window.clearTimeout(timer);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    // Catálogo público: solamente productos activos cargados en Supabase.
+    (async () => {
       try {
         const [a, d, dc, ac] = await Promise.all([
           fetchPublicProducts("arabes"),
@@ -59,28 +89,21 @@ function DorahApp() {
         setDecants(dc.map(dbProductToSiteProduct));
         setAccesorios(ac.map(dbProductToSiteProduct));
       } catch (err) {
-        console.error(
-          "No se pudieron cargar los productos desde Supabase.",
-          err
-        );
-
-        setArabes([]);
-        setDisenador([]);
-        setDecants([]);
-        setAccesorios([]);
+        console.error("No se pudieron cargar los productos de Supabase.", err);
       }
-    }
-
-    loadProducts();
+    })();
   }, []);
 
   function goTo(p: PageId) {
     setPage(p);
     setDrawerOpen(false);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+
+    // La categoría queda reflejada en la URL. Así, al volver desde una ficha,
+    // Dorah sabe exactamente qué sección debe mostrar.
+    const nextUrl = p === "inicio" ? "/" : `/?section=${p}`;
+    window.history.replaceState(window.history.state, "", nextUrl);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function closeAll() {
@@ -95,24 +118,11 @@ function DorahApp() {
         onLogoClick={() => goTo("inicio")}
         menuOpen={drawerOpen}
       />
-
-      <Overlay
-        show={drawerOpen || cartOpen}
-        onClick={closeAll}
-      />
-
-      <Drawer
-        open={drawerOpen}
-        activePage={page}
-        onNavigate={goTo}
-      />
-
+      <Overlay show={drawerOpen || cartOpen} onClick={closeAll} />
+      <Drawer open={drawerOpen} activePage={page} onNavigate={goTo} />
       <CartDrawer />
 
-      {page === "inicio" && (
-        <HomePage onNavigate={goTo} />
-      )}
-
+      {page === "inicio" && <HomePage onNavigate={goTo} />}
       {page === "arabes" && (
         <ProductGrid
           title="Perfumes Árabes"
@@ -122,7 +132,6 @@ function DorahApp() {
           searchPlaceholder="Buscar en Perfumes Árabes..."
         />
       )}
-
       {page === "disenador" && (
         <ProductGrid
           title="Perfumes de Diseñador"
@@ -132,11 +141,7 @@ function DorahApp() {
           searchPlaceholder="Buscar en Perfumes de Diseñador..."
         />
       )}
-
-      {page === "decants" && (
-        <DecantGrid products={decants} />
-      )}
-
+      {page === "decants" && <DecantGrid products={decants} />}
       {page === "accesorios" && (
         <ProductGrid
           title="Accesorios"
