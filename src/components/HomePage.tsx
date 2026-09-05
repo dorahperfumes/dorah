@@ -119,12 +119,7 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
                 <small>Resistencia · Chaco</small>
               </div>
             </div>
-
-            <div className={styles.goldCard} aria-hidden="true">
-              <span>D</span>
-              <small>Dorah</small>
-            </div>
-          </div>
+</div>
         </div>
 
         <button
@@ -139,18 +134,16 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
       </section>
 
       <section id="colecciones-dorah" className={styles.collections}>
-        <div className={styles.sectionHead}>
-          <div>
-            <span className={styles.sectionKicker}>Elegí cómo empezar</span>
-            <h2>Nuestras colecciones</h2>
-          </div>
+        <div className={styles.collectionsIntro}>
+          <span className={styles.sectionKicker}>Universo Dorah</span>
+          <h2>Nuestras colecciones</h2>
           <p>
-            Navegá por categoría y después filtrá por Hombre, Mujer o Unisex.
+            Encontrá tu próxima fragancia por estilo, categoría y personalidad.
           </p>
         </div>
 
         <div className={styles.collectionGrid}>
-          {TILES.map((tile) => (
+          {TILES.map((tile, index) => (
             <button
               type="button"
               className={styles.collectionCard}
@@ -158,12 +151,21 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
               onClick={() => onNavigate(tile.page)}
             >
               <span className={styles.cardNumber}>{tile.number}</span>
-              <div>
+
+              <div className={styles.cardTopLine}>
+                <span className={styles.cardMiniLabel}>
+                  {index < 2 ? "Perfumería" : index === 2 ? "Descubrimiento" : "Estilo"}
+                </span>
+                <span className={styles.cardArrow} aria-hidden="true">↗</span>
+              </div>
+
+              <div className={styles.cardContent}>
                 <small>{tile.eyebrow}</small>
                 <h3>{tile.title}</h3>
                 <p>{tile.desc}</p>
               </div>
-              <span className={styles.cardArrow} aria-hidden="true">↗</span>
+
+              <span className={styles.cardCta}>Explorar colección</span>
             </button>
           ))}
         </div>
