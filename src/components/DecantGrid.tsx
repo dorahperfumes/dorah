@@ -10,8 +10,8 @@ import { consultStockLink, needsConsult } from "@/lib/whatsapp";
 import styles from "./CatalogSections.module.css";
 
 const GENDER_LABELS: Record<string, string> = {
-  hombre: "Para hombre",
-  mujer: "Para mujer",
+  hombre: "Hombre",
+  mujer: "Mujer",
   unisex: "Unisex",
 };
 

@@ -447,3 +447,56 @@
     right: 7px;
   }
 }
+
+
+/* ===== Etiqueta de género premium ===== */
+:global(.gender-tag) {
+  width: fit-content !important;
+  max-width: 100%;
+  min-height: 29px;
+  margin: 1px 0 5px !important;
+  padding: 0 12px 0 10px !important;
+
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+
+  border: 1px solid rgba(157, 116, 44, 0.28) !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.55), rgba(238,222,185,.28)),
+    #f8f1df !important;
+
+  color: #80601f !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.7),
+    0 3px 10px rgba(74, 52, 17, 0.035);
+
+  font-family: "Jost", Arial, sans-serif !important;
+  font-size: 0.57rem !important;
+  font-weight: 650 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap;
+}
+
+:global(.gender-tag)::before {
+  content: "◆";
+  flex: 0 0 auto;
+  color: #b88b39;
+  font-size: 0.42rem;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
+
+@media (max-width: 560px) {
+  :global(.gender-tag) {
+    min-height: 27px;
+    padding: 0 10px 0 9px !important;
+    gap: 7px;
+    font-size: 0.54rem !important;
+    letter-spacing: 0.14em !important;
+  }
+}
