@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react";
 import { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart-context";
-import { BottleIcon, PlaceholderPhoto } from "./icons";
+import Link from "next/link";
+import { BottleIcon } from "./icons";
+import ProductCardGallery from "./ProductCardGallery";
 import { consultStockLink, needsConsult } from "@/lib/whatsapp";
 import styles from "./CatalogSections.module.css";
 
@@ -21,10 +23,6 @@ const GROUPS = [
 
 function money(n?: string) {
   return `$ ${Number(n).toLocaleString("es-AR")}`;
-}
-
-function openProduct(id: string) {
-  window.location.href = `/perfumes/${id}`;
 }
 
 export default function DecantGrid({ products }: { products: Product[] }) {
@@ -91,30 +89,28 @@ export default function DecantGrid({ products }: { products: Product[] }) {
     const consult = needsConsult(price);
 
     return (
-      <div
-        className="card"
-        key={p.id}
-        role="link"
-        tabIndex={0}
-        aria-label={`Abrir ${p.name}`}
-        onClick={() => openProduct(p.id)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            openProduct(p.id);
-          }
-        }}
-      >
-        <PlaceholderPhoto icon={<BottleIcon />} images={p.images} alt={p.name} />
+      <div className={`card ${styles.productCard}`} key={p.id}>
+        <ProductCardGallery
+          images={p.images}
+          alt={p.name}
+          placeholder={<BottleIcon />}
+        />
 
         <div className="card-body">
           {p.gender && (
             <span className="gender-tag">{GENDER_LABELS[p.gender]}</span>
           )}
           <span className="brand">{p.brand}</span>
-          <h4>{p.name}</h4>
+          <h4 className={styles.productTitle}>
+            <Link href={`/perfumes/${p.id}`} className={styles.productTitleLink}>
+              {p.name}
+            </Link>
+          </h4>
+          <Link href={`/perfumes/${p.id}`} className={styles.detailsLink}>
+            Ver ficha completa <span aria-hidden="true">→</span>
+          </Link>
 
-          <div className="size-toggle" onClick={(e) => e.stopPropagation()}>
+          <div className="size-toggle">
             <button
               className={size === "5" ? "active" : ""}
               onClick={() => setSizes((s) => ({ ...s, [p.id]: "5" }))}
@@ -139,15 +135,14 @@ export default function DecantGrid({ products }: { products: Product[] }) {
               href={consultStockLink(p.name, `${size}ml`)}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
+             
             >
               Consultar por WhatsApp
             </a>
           ) : (
             <button
               className={`card-cta${addedKey === cartKey ? " added" : ""}`}
-              onClick={(e) => {
-                e.stopPropagation();
+              onClick={() => {
                 handleAdd(p);
               }}
             >

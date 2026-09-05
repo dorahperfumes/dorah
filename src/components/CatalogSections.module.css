@@ -169,3 +169,281 @@
     line-height: 1.2;
   }
 }
+
+
+/* ===== Tarjetas V2: vista previa sin abrir la ficha ===== */
+
+.productCard {
+  cursor: default !important;
+  overflow: hidden;
+  border: 1px solid rgba(124, 91, 33, 0.18);
+  box-shadow: 0 12px 34px rgba(47, 35, 16, 0.055);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.cardGallery {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 0.92;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(235, 218, 174, 0.3), transparent 58%),
+    #fbfaf6;
+  border-bottom: 1px solid rgba(124, 91, 33, 0.12);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.galleryMain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.galleryImage {
+  object-fit: contain;
+  padding: 12px;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 220ms ease;
+}
+
+.galleryCounter {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 4;
+  min-width: 38px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 15, 12, 0.76);
+  color: #fff8e9;
+  backdrop-filter: blur(8px);
+  font: 500 0.68rem "Jost", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.galleryTapHint {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 4;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(248, 242, 226, 0.9);
+  border: 1px solid rgba(117, 84, 29, 0.18);
+  color: #76571d;
+  white-space: nowrap;
+  font: 500 0.6rem "Jost", sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.galleryArrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 38px;
+  height: 38px;
+  margin-top: -19px;
+  border-radius: 999px;
+  border: 1px solid rgba(105, 76, 28, 0.2);
+  background: rgba(250, 246, 236, 0.9);
+  color: #654914;
+  display: grid;
+  place-items: center;
+  font: 400 1.6rem/1 Georgia, serif;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 160ms ease, transform 160ms ease, background 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.galleryArrowLeft {
+  left: 9px;
+}
+
+.galleryArrowRight {
+  right: 9px;
+}
+
+.galleryDots {
+  position: absolute;
+  left: 50%;
+  bottom: 43px;
+  z-index: 5;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.galleryDot,
+.galleryDotActive {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(101, 73, 20, 0.25);
+  transition: width 160ms ease, background 160ms ease;
+}
+
+.galleryDotActive {
+  width: 17px;
+  background: #9c772e;
+}
+
+.galleryPlaceholder {
+  width: 100%;
+  aspect-ratio: 1 / 0.92;
+  background: #fbfaf6;
+  border-bottom: 1px solid rgba(124, 91, 33, 0.12);
+  color: #9c772e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.galleryPlaceholder svg {
+  width: 54px;
+  height: 54px;
+}
+
+.galleryPlaceholder span {
+  color: #a68d61;
+  font: 500 0.58rem "Jost", sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.productTitle {
+  margin: 4px 0 0 !important;
+}
+
+.productTitleLink {
+  color: inherit;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.detailsLink {
+  width: fit-content;
+  margin-top: 7px;
+  color: #87641f;
+  text-decoration: none;
+  font: 500 0.64rem "Jost", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.detailsLink span {
+  transition: transform 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .productCard:hover {
+    transform: translateY(-3px);
+    border-color: rgba(124, 91, 33, 0.3);
+    box-shadow: 0 18px 44px rgba(47, 35, 16, 0.09);
+  }
+
+  .cardGallery:hover .galleryArrow {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .galleryArrow:hover {
+    background: #17130d;
+    color: #eadca9;
+  }
+
+  .galleryMain:hover .galleryImage {
+    transform: scale(1.018);
+  }
+
+  .productTitleLink:hover,
+  .detailsLink:hover {
+    color: #a67c29;
+  }
+
+  .detailsLink:hover span {
+    transform: translateX(3px);
+  }
+}
+
+@media (max-width: 700px) {
+  .cardGallery,
+  .galleryPlaceholder {
+    aspect-ratio: 1 / 0.94;
+  }
+
+  .galleryImage {
+    padding: 9px;
+  }
+
+  .galleryArrow {
+    opacity: 1;
+    transform: scale(1);
+    width: 36px;
+    height: 36px;
+    margin-top: -18px;
+    background: rgba(250, 246, 236, 0.86);
+  }
+
+  .galleryCounter {
+    right: 9px;
+    top: 9px;
+  }
+
+  .galleryTapHint {
+    bottom: 10px;
+    font-size: 0.55rem;
+  }
+
+  .galleryDots {
+    bottom: 39px;
+  }
+
+  .detailsLink {
+    min-height: 36px;
+    align-items: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .galleryArrow {
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+  }
+
+  .galleryArrowLeft {
+    left: 7px;
+  }
+
+  .galleryArrowRight {
+    right: 7px;
+  }
+}
