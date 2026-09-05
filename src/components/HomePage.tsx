@@ -1,99 +1,201 @@
 "use client";
 
 import Image from "next/image";
+import { PHONE } from "@/lib/products";
 import { PageId } from "./PageShell";
+import styles from "./HomePage.module.css";
 
-const TILES: { page: PageId; eyebrow: string; title: string; desc: string }[] = [
-  { page: "arabes", eyebrow: "Colección", title: "Perfumes Árabes", desc: "Esencias intensas y de larga duración." },
-  { page: "disenador", eyebrow: "Colección", title: "Perfumes de Diseñador", desc: "Firmas reconocidas, 100% originales." },
-  { page: "decants", eyebrow: "Formato", title: "Decants", desc: "Probá tu favorita en 5ml o 10ml." },
-  { page: "accesorios", eyebrow: "Colección", title: "Accesorios", desc: "Anillos, pulseras y detalles que combinan." },
+const TILES: { page: PageId; number: string; eyebrow: string; title: string; desc: string }[] = [
+  {
+    page: "arabes",
+    number: "01",
+    eyebrow: "Colección",
+    title: "Perfumes Árabes",
+    desc: "Esencias intensas, elegantes y de gran duración.",
+  },
+  {
+    page: "disenador",
+    number: "02",
+    eyebrow: "Colección",
+    title: "Perfumes de Diseñador",
+    desc: "Fragancias reconocidas para todos los estilos.",
+  },
+  {
+    page: "decants",
+    number: "03",
+    eyebrow: "Descubrí",
+    title: "Decants",
+    desc: "Probá nuevas fragancias en formatos prácticos.",
+  },
+  {
+    page: "accesorios",
+    number: "04",
+    eyebrow: "Completá tu estilo",
+    title: "Accesorios",
+    desc: "Detalles seleccionados para acompañarte todos los días.",
+  },
 ];
 
 export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) => void }) {
+  const waText = encodeURIComponent("Hola Dorah 👋 Quiero conocer sus perfumes y consultar disponibilidad.");
+
+  function scrollToCollections() {
+    document.getElementById("colecciones-dorah")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
   return (
-    <section className="page">
-      <div className="hero">
-        <div className="logo-plaque">
-          <Image
-            src="/dorah-logo.png"
-            alt="Dorah"
-            width={620}
-            height={210}
-            priority
-            className="logo-hero"
-            style={{ width: "min(620px, 88vw)", height: "auto" }}
-          />
-        </div>
-        <div className="eyebrow">Perfumes árabes · Perfumes de diseñador · Decants · Accesorios</div>
-        <p className="lead">
-          Fragancias seleccionadas para quienes eligen distinguirse. Consultá disponibilidad y armá tu pedido
-          directo por WhatsApp.
-        </p>
+    <main className={styles.page}>
+      <section className={styles.hero}>
+        <div className={styles.heroGlow} aria-hidden="true" />
 
-        <div className="cat-tiles">
-          {TILES.map((t) => (
-            <div
-              className="cat-tile"
-              key={t.page}
-              onClick={() => onNavigate(t.page)}
-              style={{ cursor: "pointer" }}
-            >
-              <span className="eyebrow">{t.eyebrow}</span>
-              <h3>{t.title}</h3>
-              <p>{t.desc}</p>
+        <div className={styles.heroContent}>
+          <div className={styles.heroCopy}>
+            <span className={styles.kicker}>Perfumería · Resistencia, Chaco</span>
+
+            <Image
+              src="/dorah-logo.png"
+              alt="Dorah Perfumes & Accesorios"
+              width={540}
+              height={190}
+              priority
+              className={styles.heroLogo}
+              sizes="(max-width: 700px) 76vw, 470px"
+            />
+
+            <p className={styles.heroPhrase}>Detalles que hablan de vos</p>
+
+            <h1 className={styles.heroTitle}>
+              Encontrá una fragancia
+              <span> que se sienta tuya.</span>
+            </h1>
+
+            <p className={styles.heroLead}>
+              Perfumes árabes, de diseñador, decants y accesorios seleccionados
+              para descubrir, probar y elegir a tu ritmo.
+            </p>
+
+            <div className={styles.heroActions}>
+              <button type="button" className={styles.primaryButton} onClick={scrollToCollections}>
+                Explorar colecciones
+                <span aria-hidden="true">↓</span>
+              </button>
+
+              <a
+                className={styles.secondaryButton}
+                href={`https://wa.me/${PHONE}?text=${waText}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Consultar por WhatsApp
+              </a>
             </div>
-          ))}
-        </div>
-      </div>
 
-      <div className="about">
-        <div className="about-intro about-text">
-          <span className="eyebrow about-title">Quiénes Somos</span>
-          <p>
-            Somos una empresa dedicada a la venta y comercialización de perfumes y accesorios, ofreciendo productos
-            seleccionados para quienes buscan calidad, variedad y una atención personalizada.
-          </p>
-          <p>
-            En nuestra sección de perfumería contamos con una amplia variedad de perfumes árabes y perfumes de
-            diseñador originales, pensados para diferentes gustos y estilos. Además, contamos con probadores, para
-            que puedas conocer y probar las fragancias antes de elegir tu perfume.
-          </p>
-          <p>
-            También ofrecemos decants, una excelente opción para descubrir nuevas fragancias, probarlas durante
-            varios días o llevar tus perfumes favoritos en un formato práctico.
-          </p>
-          <p>
-            Pero nuestra propuesta no termina en la perfumería. En nuestra sección de accesorios vas a encontrar
-            una amplia variedad de productos para complementar tu estilo, como cadenas, pulseras, collares,
-            pañuelos, billeteras, carteras y mucho más, incorporando constantemente opciones de temporada y nuevas
-            tendencias.
-          </p>
-          <p>
-            Contamos con múltiples medios de pago: efectivo, transferencia bancaria, tarjetas de crédito hasta 3
-            cuotas sin interés y créditos personales.
-          </p>
-        </div>
-
-        <div className="about-photo">
-          <Image src="/local-dorah.jpg" alt="Local de Dorah — Necochea 330, Resistencia" width={640} height={800} style={{ width: "100%", height: "auto" }} />
-        </div>
-
-        <div className="about-rest about-text">
-          <div className="addr-block">
-            <div className="addr-line">
-              📍 <span>Encontranos en <b>Necochea 330</b>, Resistencia, Chaco</span>
-            </div>
-            <div className="addr-line">
-              📱 <span>3624 10 72 24</span>
-            </div>
-            <div className="addr-line">
-              📲 <span>Seguinos en nuestras redes: @dorah.accesorios</span>
+            <div className={styles.heroTrust}>
+              <span>Perfumes originales</span>
+              <i />
+              <span>Probadores disponibles</span>
+              <i />
+              <span>Atención personalizada</span>
             </div>
           </div>
-          <div className="tagline">Dorah — Detalles que hablan de vos</div>
+
+          <div className={styles.heroVisual}>
+            <div className={styles.photoFrame}>
+              <Image
+                src="/local-dorah.jpg"
+                alt="Local de Dorah en Resistencia, Chaco"
+                fill
+                priority
+                className={styles.storePhoto}
+                sizes="(max-width: 900px) 92vw, 46vw"
+              />
+              <div className={styles.photoShade} />
+              <div className={styles.photoLabel}>
+                <span>Visitá nuestro local</span>
+                <strong>Necochea 330</strong>
+                <small>Resistencia · Chaco</small>
+              </div>
+            </div>
+
+            <div className={styles.goldCard} aria-hidden="true">
+              <span>D</span>
+              <small>Dorah</small>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+
+        <button
+          type="button"
+          className={styles.scrollCue}
+          onClick={scrollToCollections}
+          aria-label="Ver colecciones"
+        >
+          <span>Descubrir</span>
+          <i>↓</i>
+        </button>
+      </section>
+
+      <section id="colecciones-dorah" className={styles.collections}>
+        <div className={styles.sectionHead}>
+          <div>
+            <span className={styles.sectionKicker}>Elegí cómo empezar</span>
+            <h2>Nuestras colecciones</h2>
+          </div>
+          <p>
+            Navegá por categoría y después filtrá por Hombre, Mujer o Unisex.
+          </p>
+        </div>
+
+        <div className={styles.collectionGrid}>
+          {TILES.map((tile) => (
+            <button
+              type="button"
+              className={styles.collectionCard}
+              key={tile.page}
+              onClick={() => onNavigate(tile.page)}
+            >
+              <span className={styles.cardNumber}>{tile.number}</span>
+              <div>
+                <small>{tile.eyebrow}</small>
+                <h3>{tile.title}</h3>
+                <p>{tile.desc}</p>
+              </div>
+              <span className={styles.cardArrow} aria-hidden="true">↗</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.about}>
+        <div className={styles.aboutIntro}>
+          <span className={styles.sectionKicker}>Quiénes somos</span>
+          <h2>Una experiencia pensada para elegir sin apuro.</h2>
+        </div>
+
+        <div className={styles.aboutColumns}>
+          <p>
+            En Dorah vas a encontrar perfumes árabes y de diseñador, además de
+            probadores para conocer la fragancia antes de elegirla.
+          </p>
+          <p>
+            También contamos con decants y una selección de accesorios,
+            incorporando nuevas opciones y tendencias constantemente.
+          </p>
+          <p>
+            Podés consultarnos disponibilidad y armar tu pedido directamente
+            por WhatsApp con una atención personalizada.
+          </p>
+        </div>
+
+        <div className={styles.aboutFooter}>
+          <span>📍 Necochea 330 · Resistencia, Chaco</span>
+          <span>📱 +54 9 362 410-7224</span>
+          <span>📲 @dorah.accesorios</span>
+        </div>
+      </section>
+    </main>
   );
 }
