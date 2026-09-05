@@ -172,29 +172,22 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
       </section>
 
       <section className={styles.about}>
-        <div className={styles.aboutIntro}>
-          <span className={styles.sectionKicker}>Quiénes somos</span>
-          <p className={styles.aboutLead}>
-            Somos una empresa dedicada a la venta y comercialización de perfumes y accesorios,
-            ofreciendo productos seleccionados para quienes buscan calidad, variedad y una atención personalizada.
-          </p>
-        </div>
-
-        <div className={styles.aboutStory}>
-          <div className={styles.aboutText}>
-            <p>
-              En nuestra sección de perfumería contamos con una amplia variedad de perfumes árabes y perfumes de
-              diseñador originales, pensados para diferentes gustos y estilos.
-            </p>
-            <p>
-              Además, contamos con probadores, para que puedas conocer y probar las fragancias antes de elegir tu perfume.
-            </p>
-            <p>
-              También ofrecemos decants, una excelente opción para descubrir nuevas fragancias, probarlas durante
-              varios días o llevar tus perfumes favoritos en un formato práctico.
+        <div className={styles.aboutHeader}>
+          <div>
+            <span className={styles.sectionKicker}>Quiénes somos</span>
+            <p className={styles.aboutLead}>
+              Somos una empresa dedicada a la venta y comercialización de perfumes y accesorios,
+              con una selección pensada para quienes buscan calidad, variedad y atención personalizada.
             </p>
           </div>
 
+          <div className={styles.aboutSignature} aria-hidden="true">
+            <span>D</span>
+            <small>DORAH</small>
+          </div>
+        </div>
+
+        <div className={styles.aboutLayout}>
           <div className={styles.aboutPhoto}>
             <Image
               src="/local-dorah.jpg"
@@ -203,21 +196,55 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
               className={styles.aboutPhotoImage}
               sizes="(max-width: 820px) 92vw, 42vw"
             />
+            <div className={styles.aboutPhotoOverlay}>
+              <span>Visitá nuestro local</span>
+              <strong>Necochea 330</strong>
+              <small>Resistencia · Chaco</small>
+            </div>
           </div>
 
-          <div className={styles.aboutText}>
-            <p>
-              Pero nuestra propuesta no termina en la perfumería. En nuestra sección de accesorios vas a encontrar
-              una amplia variedad de productos para complementar tu estilo, como cadenas, pulseras, collares,
-              pañuelos, billeteras, carteras y mucho más.
-            </p>
-            <p>
-              Incorporamos constantemente opciones de temporada y nuevas tendencias.
-            </p>
-            <p>
-              Contamos con múltiples medios de pago: efectivo, transferencia bancaria, tarjetas de crédito hasta
-              3 cuotas sin interés y créditos personales.
-            </p>
+          <div className={styles.aboutInfo}>
+            <article className={styles.aboutBlock}>
+              <span className={styles.aboutNumber}>01</span>
+              <div>
+                <h3>Perfumería</h3>
+                <p>
+                  Contamos con una amplia variedad de perfumes árabes y perfumes de diseñador originales,
+                  pensados para diferentes gustos y estilos.
+                </p>
+                <p>
+                  Además, tenemos probadores para que puedas conocer la fragancia antes de elegir,
+                  y decants para descubrir nuevos perfumes en un formato práctico.
+                </p>
+              </div>
+            </article>
+
+            <article className={styles.aboutBlock}>
+              <span className={styles.aboutNumber}>02</span>
+              <div>
+                <h3>Accesorios</h3>
+                <p>
+                  Nuestra propuesta también incluye cadenas, pulseras, collares, pañuelos,
+                  billeteras, carteras y otros accesorios seleccionados para complementar tu estilo.
+                </p>
+                <p>
+                  Incorporamos constantemente opciones de temporada y nuevas tendencias.
+                </p>
+              </div>
+            </article>
+
+            <article className={styles.aboutBlock}>
+              <span className={styles.aboutNumber}>03</span>
+              <div>
+                <h3>Medios de pago</h3>
+                <div className={styles.paymentChips}>
+                  <span>Efectivo</span>
+                  <span>Transferencia</span>
+                  <span>Hasta 3 cuotas sin interés</span>
+                  <span>Créditos personales</span>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
 
