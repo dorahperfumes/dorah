@@ -1,0 +1,440 @@
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 80;
+  width: min(440px, 100vw);
+  height: 100vh;
+  height: 100dvh;
+  background: #f6efdf;
+  color: #1a160f;
+  border-left: 1px solid rgba(141, 107, 44, 0.28);
+  box-shadow: -22px 0 60px rgba(25, 19, 10, 0.18);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(105%);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  visibility: hidden;
+}
+
+.open {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.head {
+  flex: 0 0 auto;
+  min-height: 112px;
+  padding:
+    max(22px, env(safe-area-inset-top))
+    max(22px, env(safe-area-inset-right))
+    18px
+    24px;
+  border-bottom: 1px solid rgba(141, 107, 44, 0.22);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  background: rgba(246, 239, 223, 0.96);
+  backdrop-filter: blur(12px);
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #a17931;
+  font-family: Arial, sans-serif;
+  font-size: 0.63rem;
+  letter-spacing: 0.2em;
+}
+
+.head h3 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.head p {
+  margin: 8px 0 0;
+  color: #756b59;
+  font-family: Arial, sans-serif;
+  font-size: 0.75rem;
+}
+
+.close {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(141, 107, 44, 0.38);
+  background: transparent;
+  color: #6c5322;
+  font-size: 1.65rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.items {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 24px 18px;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(141, 107, 44, 0.2);
+}
+
+.photo {
+  width: 82px;
+  height: 96px;
+  background: #fff;
+  border: 1px solid rgba(141, 107, 44, 0.2);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 5px;
+}
+
+.photo svg {
+  width: 42%;
+  height: 42%;
+  fill: none;
+  stroke: #b28b3d;
+}
+
+.itemInfo {
+  min-width: 0;
+}
+
+.brand {
+  display: block;
+  color: #9b742d;
+  font-family: Arial, sans-serif;
+  font-size: 0.61rem;
+  line-height: 1.3;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.itemInfo h4 {
+  margin: 4px 0 5px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.23rem;
+  font-weight: 600;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.size {
+  display: inline-flex;
+  margin-bottom: 8px;
+  padding: 3px 8px;
+  border: 1px solid rgba(141, 107, 44, 0.28);
+  border-radius: 30px;
+  color: #745a28;
+  font-family: Arial, sans-serif;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  color: #756b59;
+  font-family: Arial, sans-serif;
+  font-size: 0.69rem;
+}
+
+.priceRow strong {
+  color: #332817;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.itemActions {
+  margin-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.quantity {
+  height: 42px;
+  display: inline-grid;
+  grid-template-columns: 42px 40px 42px;
+  border: 1px solid rgba(141, 107, 44, 0.34);
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.quantity button,
+.quantity span {
+  min-width: 0;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+
+.quantity button {
+  color: #72551c;
+  font-size: 1.2rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.quantity button:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.quantity span {
+  border-left: 1px solid rgba(141, 107, 44, 0.2);
+  border-right: 1px solid rgba(141, 107, 44, 0.2);
+  font: 600 0.78rem Arial, sans-serif;
+}
+
+.remove {
+  min-height: 42px;
+  padding: 0 3px;
+  border: 0;
+  background: transparent;
+  color: #9a543e;
+  font-family: Arial, sans-serif;
+  font-size: 0.59rem;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.foot {
+  flex: 0 0 auto;
+  padding:
+    16px
+    max(22px, env(safe-area-inset-right))
+    max(18px, calc(env(safe-area-inset-bottom) + 12px))
+    max(22px, env(safe-area-inset-left));
+  border-top: 1px solid rgba(141, 107, 44, 0.25);
+  background: #efe3c9;
+  box-shadow: 0 -16px 40px rgba(62, 45, 18, 0.06);
+}
+
+.summaryLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font: 0.76rem Arial, sans-serif;
+  color: #685d4b;
+}
+
+.summaryLine strong {
+  color: #1f190f;
+}
+
+.total {
+  margin-top: 11px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(141, 107, 44, 0.22);
+  font-size: 0.91rem;
+}
+
+.total strong {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.stockNote {
+  margin: 10px 0 12px;
+  padding: 9px 10px;
+  border: 1px solid rgba(161, 121, 49, 0.25);
+  background: rgba(255, 255, 255, 0.28);
+  color: #6c604c;
+  font: 0.68rem/1.45 Arial, sans-serif;
+}
+
+.send {
+  min-height: 54px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 10px 16px;
+  background: #10100f;
+  border: 1px solid #10100f;
+  color: #e9d69b;
+  text-decoration: none;
+  font: 600 0.69rem/1.2 Arial, sans-serif;
+  letter-spacing: 0.12em;
+  text-align: center;
+  transition: 180ms ease;
+  touch-action: manipulation;
+}
+
+.send svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.45;
+  flex: 0 0 auto;
+}
+
+.send:hover {
+  background: #b28b3d;
+  border-color: #b28b3d;
+  color: #15110a;
+}
+
+.clear {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 8px;
+  border: 0;
+  background: transparent;
+  color: #7c6740;
+  font: 0.67rem Arial, sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.note {
+  margin: 8px auto 0;
+  max-width: 345px;
+  color: #7a705f;
+  font: 0.63rem/1.45 Arial, sans-serif;
+  text-align: center;
+}
+
+.empty {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 35px 10px;
+}
+
+.emptyIcon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(141, 107, 44, 0.28);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #b28b3d;
+}
+
+.emptyIcon svg {
+  width: 38%;
+  height: 38%;
+  stroke: currentColor;
+  fill: none;
+}
+
+.empty strong {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 600;
+}
+
+.empty p {
+  max-width: 290px;
+  margin: 8px auto 20px;
+  color: #766c5a;
+  font: 0.77rem/1.55 Arial, sans-serif;
+}
+
+.empty button {
+  min-height: 46px;
+  padding: 0 22px;
+  border: 1px solid #97752f;
+  background: transparent;
+  color: #74571e;
+  font: 0.66rem Arial, sans-serif;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+@media (max-width: 560px) {
+  .drawer {
+    width: 100vw;
+    border-left: 0;
+  }
+
+  .head {
+    min-height: 102px;
+    padding-left: 18px;
+    padding-right: max(18px, env(safe-area-inset-right));
+  }
+
+  .head h3 {
+    font-size: 1.85rem;
+  }
+
+  .items {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .item {
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .photo {
+    width: 74px;
+    height: 88px;
+  }
+
+  .quantity {
+    grid-template-columns: 44px 38px 44px;
+    height: 44px;
+  }
+
+  .itemActions {
+    align-items: flex-end;
+  }
+
+  .foot {
+    padding-left: max(18px, env(safe-area-inset-left));
+    padding-right: max(18px, env(safe-area-inset-right));
+  }
+
+  .send {
+    min-height: 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .send {
+    transition: none;
+  }
+}

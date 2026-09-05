@@ -166,6 +166,7 @@ function ProductDetailPage() {
       price: selectedPrice,
       size: isDecant ? size : undefined,
       category: product.category,
+      image: product.images?.[0],
     });
 
     setAdded(true);

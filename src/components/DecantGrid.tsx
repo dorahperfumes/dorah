@@ -70,6 +70,7 @@ export default function DecantGrid({ products }: { products: Product[] }) {
       price,
       size: `${size}ml`,
       category: "decants",
+      image: p.images?.[0],
     });
 
     setAddedKey(key);

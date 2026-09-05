@@ -74,6 +74,7 @@ export default function ProductGrid({
       brand: p.brand,
       price: p.price,
       category: p.category,
+      image: p.images?.[0],
     });
     setAddedKey(p.id);
     setTimeout(() => setAddedKey(null), 1200);
