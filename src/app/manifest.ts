@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
+    id: "/",
     name: "Dorah — Perfumes & Accesorios",
     short_name: "Dorah",
     description:
@@ -10,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     background_color: "#f6efdf",
-    theme_color: "#0c0a08",
+    theme_color: "#f6efdf",
     lang: "es-AR",
     categories: ["shopping", "lifestyle"],
     icons: [

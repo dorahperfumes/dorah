@@ -1,0 +1,46 @@
+/*
+  DORAH — bloqueo de paleta clara
+  Evita que navegadores móviles intenten reinterpretar automáticamente
+  los colores de la tienda cuando el teléfono está en modo oscuro.
+*/
+
+:root {
+  color-scheme: only light !important;
+  background-color: #f6efdf;
+}
+
+html {
+  color-scheme: only light !important;
+  background-color: #f6efdf;
+}
+
+body {
+  background-color: #f6efdf;
+}
+
+/* Los controles nativos también deben mantener apariencia clara. */
+input,
+select,
+textarea,
+button {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  html {
+    color-scheme: only light !important;
+    background-color: #f6efdf;
+  }
+
+  body {
+    background-color: #f6efdf;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    color-scheme: light;
+  }
+}

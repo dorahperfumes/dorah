@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import PWARegister from "@/components/PWARegister";
 import "./globals.css";
+import "./color-lock.css";
 
 const SITE_URL = "https://dorah-murex.vercel.app";
 
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: "Dorah",
-    statusBarStyle: "black",
+    statusBarStyle: "default",
   },
   formatDetection: {
     telephone: false,
@@ -65,8 +66,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0c0a08",
-  colorScheme: "light",
+  themeColor: "#f6efdf",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -76,6 +76,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es-AR">
+      <head>
+        <meta name="color-scheme" content="only light" />
+        <meta name="supported-color-schemes" content="light" />
+      </head>
       <body>
         <PWARegister />
         {children}
