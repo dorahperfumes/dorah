@@ -174,7 +174,6 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
       <section className={styles.about}>
         <div className={styles.aboutIntro}>
           <span className={styles.sectionKicker}>Quiénes somos</span>
-          <h2>Detalles que hablan de vos.</h2>
           <p className={styles.aboutLead}>
             Somos una empresa dedicada a la venta y comercialización de perfumes y accesorios,
             ofreciendo productos seleccionados para quienes buscan calidad, variedad y una atención personalizada.
