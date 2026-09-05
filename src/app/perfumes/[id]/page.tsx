@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import CartDrawer from "@/components/CartDrawer";
 import SiteFooter, { FloatingSocial } from "@/components/SiteFooter";
@@ -298,9 +299,13 @@ function ProductDetailPage() {
                 aria-label={images.length > 1 ? "Ver la siguiente foto" : undefined}
               >
                 {images.length > 0 ? (
-                  <img
+                  <Image
                     src={images[activeImage]}
                     alt={`${product.name} - foto ${activeImage + 1}`}
+                    fill
+                    sizes="(max-width: 899px) calc(100vw - 28px), 55vw"
+                    fetchPriority={activeImage === 0 ? "high" : "auto"}
+                    style={{ objectFit: "contain", padding: "18px" }}
                   />
                 ) : (
                   <div className={styles.noPhoto}>
@@ -358,7 +363,13 @@ function ProductDetailPage() {
                     onClick={() => setActiveImage(index)}
                     aria-label={`Ver foto ${index + 1}`}
                   >
-                    <img src={image} alt="" />
+                    <Image
+                      src={image}
+                      alt=""
+                      fill
+                      sizes="82px"
+                      style={{ objectFit: "contain", padding: "4px" }}
+                    />
                   </button>
                 ))}
               </div>
@@ -480,7 +491,13 @@ function ProductDetailPage() {
                   <Link key={item.id} href={`/perfumes/${item.id}`} className={styles.relatedCard}>
                     <div className={styles.relatedImage}>
                       {image ? (
-                        <img src={image} alt={item.name} />
+                        <Image
+                          src={image}
+                          alt={item.name}
+                          fill
+                          sizes="(max-width: 560px) 46vw, (max-width: 899px) 32vw, 280px"
+                          style={{ objectFit: "contain", padding: "10px" }}
+                        />
                       ) : (
                         <div className={styles.relatedPlaceholder}>DORAH</div>
                       )}

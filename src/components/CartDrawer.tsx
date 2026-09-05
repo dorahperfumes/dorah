@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
 import { BottleIcon, RingIcon } from "./icons";
 import styles from "./CartDrawer.module.css";
@@ -101,7 +102,13 @@ export default function CartDrawer() {
               <article className={styles.item} key={item.key}>
                 <div className={styles.photo}>
                   {item.image ? (
-                    <img src={item.image} alt="" />
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fill
+                      sizes="82px"
+                      style={{ objectFit: "contain", padding: "5px" }}
+                    />
                   ) : item.category === "accesorios" ? (
                     <RingIcon />
                   ) : (

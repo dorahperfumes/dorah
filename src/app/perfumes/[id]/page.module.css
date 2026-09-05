@@ -264,6 +264,7 @@
 }
 
 .thumbnails button {
+  position: relative;
   width: 82px;
   height: 82px;
   flex: 0 0 82px;
@@ -506,6 +507,7 @@
 }
 
 .relatedImage {
+  position: relative;
   aspect-ratio: 1 / 1.1;
   margin-bottom: 14px;
   border: 1px solid rgba(107, 83, 34, 0.15);

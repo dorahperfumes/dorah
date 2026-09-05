@@ -79,6 +79,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <meta name="color-scheme" content="only light" />
         <meta name="supported-color-schemes" content="light" />
+        <link
+          rel="preconnect"
+          href="https://cppzskiinitxmaitwwij.supabase.co"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://cppzskiinitxmaitwwij.supabase.co"
+        />
       </head>
       <body>
         <PWARegister />

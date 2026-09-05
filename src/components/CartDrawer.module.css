@@ -95,6 +95,7 @@
 }
 
 .photo {
+  position: relative;
   width: 82px;
   height: 96px;
   background: #fff;

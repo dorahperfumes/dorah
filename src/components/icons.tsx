@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function BottleIcon() {
   return (
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ad8a3f" strokeWidth={1.4}>
@@ -32,8 +34,13 @@ export function PlaceholderPhoto({
   if (images && images.length > 0) {
     return (
       <div className="card-photo has-image">
-        {/* Fotos reales: se ven completas (sin recortar) y livianas en cualquier celular */}
-        <img src={images[0]} alt={alt || ""} loading="lazy" />
+        <Image
+          src={images[0]}
+          alt={alt || ""}
+          fill
+          sizes="(max-width: 560px) calc(50vw - 28px), (max-width: 900px) 33vw, 260px"
+          style={{ objectFit: "contain", padding: "6px" }}
+        />
         {images.length > 1 && <span className="photo-count">1/{images.length}</span>}
       </div>
     );
