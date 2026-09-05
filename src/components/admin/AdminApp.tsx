@@ -212,6 +212,7 @@ function ImageSlots({
 
 export default function AdminApp() {
   const [view, setView] = useState<"dashboard" | DBCategory>("dashboard");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -652,6 +653,26 @@ export default function AdminApp() {
     );
   }
 
+  function openQuickNew() {
+    if (view === "decants") {
+      openNewDecant();
+      return;
+    }
+
+    if (view === "arabes" || view === "disenador" || view === "accesorios") {
+      openNewSimple(view);
+      return;
+    }
+
+    openNewSimple("arabes");
+  }
+
+  function changeView(next: "dashboard" | DBCategory) {
+    setView(next);
+    setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   function DecantProductList() {
     const visible = filteredProducts("decants");
     if (!visible.length) return <EmptyState cat="decants" />;
@@ -719,11 +740,11 @@ export default function AdminApp() {
         </div>
 
         <nav>
-          <button className={view === "dashboard" ? "active" : ""} onClick={() => setView("dashboard")}>
+          <button className={view === "dashboard" ? "active" : ""} onClick={() => changeView("dashboard")}>
             <span className="dot" /> Resumen
           </button>
           {CATEGORIES.map((cat) => (
-            <button key={cat} className={view === cat ? "active" : ""} onClick={() => setView(cat)}>
+            <button key={cat} className={view === cat ? "active" : ""} onClick={() => changeView(cat)}>
               <span className="dot" /> {CATEGORY_LABELS[cat]}
             </button>
           ))}
@@ -744,6 +765,14 @@ export default function AdminApp() {
               </div>
             </div>
 
+            <button className="mobile-primary-add" type="button" onClick={openQuickNew}>
+              <span>＋</span>
+              <div>
+                <strong>Agregar producto</strong>
+                <small>Cargá un perfume desde el celular</small>
+              </div>
+            </button>
+
             <div className="overview-cards">
               <div className="overview-card main-overview">
                 <span>Total productos</span>
@@ -763,7 +792,7 @@ export default function AdminApp() {
               {CATEGORIES.map((cat) => {
                 const totals = categoryTotals(cat);
                 return (
-                  <button className="stat-card" key={cat} onClick={() => setView(cat)}>
+                  <button className="stat-card" key={cat} onClick={() => changeView(cat)}>
                     <span className="eyebrow">{cat === "decants" ? "Formato" : "Categoría"}</span>
                     <div className="stat-main">
                       <div className="num">{totals.total}</div>
@@ -813,6 +842,70 @@ export default function AdminApp() {
           </section>
         )}
       </main>
+
+      <nav className="mobile-bottom-nav" aria-label="Navegación del administrador">
+        <button
+          type="button"
+          className={view === "dashboard" ? "active" : ""}
+          onClick={() => changeView("dashboard")}
+        >
+          <span className="mobile-nav-icon">⌂</span>
+          <span>Resumen</span>
+        </button>
+
+        <button
+          type="button"
+          className={view !== "dashboard" ? "active" : ""}
+          onClick={() => changeView(view === "dashboard" ? "arabes" : view)}
+        >
+          <span className="mobile-nav-icon">◇</span>
+          <span>Productos</span>
+        </button>
+
+        <button type="button" className="mobile-nav-new" onClick={openQuickNew}>
+          <span className="mobile-nav-plus">＋</span>
+          <span>Nuevo</span>
+        </button>
+
+        <button
+          type="button"
+          className={mobileMenuOpen ? "active" : ""}
+          onClick={() => setMobileMenuOpen((open) => !open)}
+          aria-expanded={mobileMenuOpen}
+        >
+          <span className="mobile-nav-icon">•••</span>
+          <span>Más</span>
+        </button>
+      </nav>
+
+      <div
+        className={`mobile-menu-backdrop${mobileMenuOpen ? " show" : ""}`}
+        onClick={() => setMobileMenuOpen(false)}
+      />
+
+      <div className={`mobile-category-sheet${mobileMenuOpen ? " show" : ""}`}>
+        <div className="mobile-sheet-handle" />
+        <div className="mobile-sheet-head">
+          <div>
+            <span>Catálogo Dorah</span>
+            <strong>Ir a una categoría</strong>
+          </div>
+          <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Cerrar menú">×</button>
+        </div>
+
+        <div className="mobile-sheet-grid">
+          {CATEGORIES.map((cat) => {
+            const totals = categoryTotals(cat);
+            return (
+              <button type="button" key={cat} onClick={() => changeView(cat)}>
+                <span>{CATEGORY_LABELS[cat]}</span>
+                <strong>{totals.total}</strong>
+                <small>{totals.active} activos</small>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Modal producto simple */}
       <div className={`modal-overlay${modalSimpleOpen ? " show" : ""}`} onClick={(e) => e.target === e.currentTarget && closeSimpleModal()}>

@@ -353,3 +353,538 @@
 @media (prefers-reduced-motion: reduce) {
   .admin-root *, .admin-root *::before, .admin-root *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+
+
+/* =========================================================
+   ADMIN V3 MOBILE
+   Desktop queda igual; estas mejoras aplican a celulares.
+   ========================================================= */
+
+.admin-root .mobile-bottom-nav,
+.admin-root .mobile-category-sheet,
+.admin-root .mobile-menu-backdrop,
+.admin-root .mobile-primary-add {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .admin-root {
+    --mobile-nav-h: 72px;
+  }
+
+  /* Header superior: compacto, sin navegación horizontal interminable */
+  .admin-root .sidebar {
+    height: 64px;
+    min-height: 64px;
+    padding: 9px 16px;
+    justify-content: flex-start;
+    overflow: visible;
+  }
+
+  .admin-root .sidebar-brand {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .admin-root .sidebar-brand img {
+    width: 92px;
+    height: auto;
+  }
+
+  .admin-root .sidebar nav {
+    display: none;
+  }
+
+  .admin-root main {
+    width: 100%;
+    padding: 24px 16px calc(var(--mobile-nav-h) + 34px + env(safe-area-inset-bottom));
+  }
+
+  /* Títulos más compactos en móvil */
+  .admin-root .topline {
+    margin-bottom: 18px;
+  }
+
+  .admin-root .topline h2 {
+    font-size: clamp(2.15rem, 10vw, 3rem);
+  }
+
+  .admin-root .topline .sub {
+    margin-top: 5px;
+    font-size: .82rem;
+  }
+
+  .admin-root .section-kicker {
+    font-size: .58rem;
+    letter-spacing: .16em;
+  }
+
+  /* CTA principal del resumen */
+  .admin-root .mobile-primary-add {
+    width: 100%;
+    min-height: 74px;
+    margin: 0 0 14px;
+    padding: 12px 15px;
+    border: 1px solid #b18b42;
+    border-radius: 9px;
+    background: var(--black);
+    color: var(--gold-300);
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    text-align: left;
+    box-shadow: 0 10px 26px rgba(23, 17, 7, .12);
+  }
+
+  .admin-root .mobile-primary-add > span {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(201,164,85,.13);
+    border: 1px solid rgba(201,164,85,.32);
+    font-size: 1.35rem;
+  }
+
+  .admin-root .mobile-primary-add div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-root .mobile-primary-add strong {
+    font-size: .9rem;
+    font-weight: 500;
+  }
+
+  .admin-root .mobile-primary-add small {
+    margin-top: 3px;
+    color: rgba(234,221,176,.62);
+    font-size: .65rem;
+  }
+
+  /* Resumen en una sola fila */
+  .admin-root .overview-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .admin-root .overview-card,
+  .admin-root .overview-card.main-overview {
+    grid-column: auto;
+    min-height: 94px;
+    padding: 13px 10px;
+    border-radius: 8px;
+  }
+
+  .admin-root .overview-card span {
+    font-size: .49rem;
+    letter-spacing: .065em;
+    line-height: 1.25;
+  }
+
+  .admin-root .overview-card strong {
+    margin-top: 5px;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  /* Categorías: filas compactas tipo app */
+  .admin-root .stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-root .stat-card {
+    width: 100%;
+    min-height: 84px;
+    padding: 13px 14px;
+    border-radius: 9px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "label number"
+      "break number";
+    gap: 5px 14px;
+    align-items: center;
+    text-align: left;
+  }
+
+  .admin-root .stat-card .eyebrow {
+    display: none;
+  }
+
+  .admin-root .stat-main {
+    grid-area: number;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .admin-root .stat-main .num {
+    font-size: 2rem;
+  }
+
+  .admin-root .stat-main > span {
+    display: none;
+  }
+
+  .admin-root .stat-card .lbl {
+    grid-area: label;
+    margin: 0;
+    font-size: .95rem;
+    font-weight: 500;
+  }
+
+  .admin-root .stat-breakdown {
+    grid-area: break;
+    padding: 0;
+    border: 0;
+    justify-content: flex-start;
+    gap: 12px;
+    font-size: .61rem;
+  }
+
+  /* Botón nuevo de cada categoría: visible y ancho completo */
+  .admin-root .topline {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .admin-root .topline .btn {
+    min-height: 50px;
+    border-radius: 7px;
+    font-size: .7rem;
+  }
+
+  /* Filtros: más respirables */
+  .admin-root .admin-filters {
+    margin-bottom: 12px;
+    border-radius: 9px;
+  }
+
+  .admin-root .search-box input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .admin-root .filter-group {
+    width: 100%;
+  }
+
+  .admin-root .filter-group button {
+    min-height: 40px;
+    border-radius: 5px;
+  }
+
+  .admin-root .filter-select {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  /* Producto: tarjeta móvil clara y acciones grandes */
+  .admin-root .product-admin-list {
+    gap: 9px;
+  }
+
+  .admin-root .product-admin-row,
+  .admin-root .decant-row {
+    border-radius: 9px;
+    padding: 12px;
+    box-shadow: 0 6px 18px rgba(37, 28, 10, .035);
+  }
+
+  .admin-root .thumb {
+    width: 72px;
+    height: 72px;
+    flex-basis: 72px;
+    border-radius: 7px;
+  }
+
+  .admin-root .row-name {
+    font-size: .94rem;
+  }
+
+  .admin-root .row-brand {
+    margin-top: 3px;
+    font-size: .66rem;
+  }
+
+  .admin-root .mobile-pills {
+    margin-top: 7px;
+  }
+
+  .admin-root .row-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    padding-top: 10px;
+  }
+
+  .admin-root .icon-btn {
+    width: 100%;
+    min-width: 0;
+    height: 43px;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  /* Modal: ocupa casi toda la pantalla y guardar siempre accesible */
+  .admin-root .modal {
+    height: min(94dvh, 860px);
+    max-height: 94dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-root .modal-head {
+    flex: 0 0 auto;
+    min-height: 68px;
+  }
+
+  .admin-root .modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 28px;
+  }
+
+  .admin-root .modal-foot {
+    flex: 0 0 auto;
+    box-shadow: 0 -9px 24px rgba(53, 41, 18, .07);
+  }
+
+  .admin-root .modal-foot .btn-gold {
+    flex: 1.5;
+  }
+
+  /* Fotos: mejores controles táctiles */
+  .admin-root .photo-add {
+    min-height: 64px;
+    border-radius: 7px;
+  }
+
+  .admin-root .photo-slot {
+    border-radius: 7px;
+  }
+
+  /* Navegación inferior */
+  .admin-root .mobile-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 80;
+    height: calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+    background: rgba(14, 12, 9, .97);
+    border-top: 1px solid rgba(201,164,85,.28);
+    box-shadow: 0 -8px 28px rgba(0,0,0,.14);
+    backdrop-filter: blur(14px);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+
+  .admin-root .mobile-bottom-nav button {
+    min-width: 0;
+    height: 58px;
+    padding: 4px 3px;
+    border: 0;
+    background: transparent;
+    color: rgba(250,247,240,.62);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: .57rem;
+    letter-spacing: .035em;
+  }
+
+  .admin-root .mobile-bottom-nav button.active {
+    color: var(--gold-300);
+    background: rgba(201,164,85,.09);
+  }
+
+  .admin-root .mobile-nav-icon {
+    font-size: 1.16rem;
+    line-height: 1;
+  }
+
+  .admin-root .mobile-nav-new {
+    color: var(--gold-300) !important;
+  }
+
+  .admin-root .mobile-nav-plus {
+    width: 36px;
+    height: 36px;
+    margin-top: -19px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--gold-500);
+    color: var(--black);
+    border: 4px solid var(--black);
+    box-shadow: 0 5px 15px rgba(0,0,0,.28);
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  /* Sheet "Más" */
+  .admin-root .mobile-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 84;
+    background: rgba(0,0,0,.38);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+    display: block;
+  }
+
+  .admin-root .mobile-menu-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .admin-root .mobile-category-sheet {
+    position: fixed;
+    z-index: 85;
+    left: 10px;
+    right: 10px;
+    bottom: calc(var(--mobile-nav-h) + 8px + env(safe-area-inset-bottom));
+    padding: 10px 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fffdf8;
+    box-shadow: 0 24px 70px rgba(0,0,0,.24);
+    transform: translateY(22px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .2s ease, opacity .2s ease;
+    display: block;
+  }
+
+  .admin-root .mobile-category-sheet.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .admin-root .mobile-sheet-handle {
+    width: 38px;
+    height: 4px;
+    margin: 0 auto 11px;
+    border-radius: 999px;
+    background: #d8c9a8;
+  }
+
+  .admin-root .mobile-sheet-head {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .admin-root .mobile-sheet-head div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-root .mobile-sheet-head span {
+    color: var(--gold-700);
+    font-size: .56rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  .admin-root .mobile-sheet-head strong {
+    margin-top: 3px;
+    font-size: .86rem;
+    font-weight: 500;
+  }
+
+  .admin-root .mobile-sheet-head > button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1.3rem;
+  }
+
+  .admin-root .mobile-sheet-grid {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .admin-root .mobile-sheet-grid button {
+    min-height: 84px;
+    padding: 11px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--paper);
+    color: var(--ink);
+    text-align: left;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3px 7px;
+  }
+
+  .admin-root .mobile-sheet-grid button > span {
+    font-size: .73rem;
+    line-height: 1.25;
+  }
+
+  .admin-root .mobile-sheet-grid button > strong {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    align-self: center;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.9rem;
+  }
+
+  .admin-root .mobile-sheet-grid button > small {
+    color: var(--ink-soft);
+    font-size: .58rem;
+  }
+
+  /* Toast no queda tapado por barra inferior */
+  .admin-root .admin-toast {
+    bottom: calc(var(--mobile-nav-h) + 14px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 430px) {
+  .admin-root .overview-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .admin-root .overview-card,
+  .admin-root .overview-card.main-overview {
+    grid-column: auto;
+  }
+
+  .admin-root .photo-controls {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .admin-root .photo-controls .remove-photo {
+    grid-column: auto;
+  }
+}
