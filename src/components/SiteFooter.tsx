@@ -1,26 +1,78 @@
+import Image from "next/image";
+import Link from "next/link";
 import { PHONE } from "@/lib/products";
+import styles from "./SiteFooter.module.css";
+
+const INSTAGRAM_URL = "https://www.instagram.com/dorah.accesorios/";
+const TIKTOK_URL = "https://www.tiktok.com/@dorahaccesorios?_r=1&_t=ZS-999vy8eGjvI";
+const PHONE_LABEL = "+54 9 362 410-7224";
 
 export default function SiteFooter() {
   return (
-    <footer>
-      <div>© 2026 Dorah — Perfumes & Accesorios</div>
-      <div className="foot-addr">
-        📍 Necochea 330 · Resistencia, Chaco
-        <br />
-        🚚 Envíos a todo el país
+    <footer className={styles.footer}>
+      <div className={styles.inner}>
+        <section className={styles.brandCol} aria-label="Dorah">
+          <Link href="/" className={styles.logoLink} aria-label="Ir al inicio de Dorah">
+            <Image
+              src="/dorah-logo.png"
+              alt="Dorah Perfumes & Accesorios"
+              width={190}
+              height={110}
+              className={styles.logo}
+              sizes="190px"
+            />
+          </Link>
+
+          <p className={styles.description}>
+            Perfumería seleccionada con criterio: fragancias árabes, de diseñador,
+            decants y accesorios para quienes eligen distinguirse.
+          </p>
+
+          <p className={styles.location}>Necochea 330 · Resistencia, Chaco</p>
+
+          <div className={styles.socialRow}>
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4.2" />
+                <circle cx="17.4" cy="6.7" r="1" className={styles.fillDot} />
+              </svg>
+              @dorah.accesorios
+            </a>
+            <a href={TIKTOK_URL} target="_blank" rel="noopener noreferrer">
+              TikTok
+            </a>
+          </div>
+        </section>
+
+        <section className={styles.column} aria-labelledby="footer-contacto">
+          <h2 id="footer-contacto">Contacto</h2>
+          <a
+            className={styles.phone}
+            href={`https://wa.me/${PHONE}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {PHONE_LABEL}
+          </a>
+          <p>Consultas y pedidos por WhatsApp, todos los días.</p>
+          <p>Envíos a todo el país.</p>
+        </section>
+
+        <section className={styles.column} aria-labelledby="footer-dorah">
+          <h2 id="footer-dorah">Dorah</h2>
+          <p>© 2026 Dorah. Todos los derechos reservados.</p>
+          <nav className={styles.links} aria-label="Información legal y administración">
+            <Link href="/terminos">Términos y condiciones</Link>
+            <Link href="/privacidad">Política de privacidad</Link>
+            <Link href="/admin">Acceso administrador</Link>
+          </nav>
+        </section>
       </div>
-      <div>
-        <a href="https://www.instagram.com/dorah.accesorios/" target="_blank" rel="noopener">
-          Instagram
-        </a>
-        &nbsp;·&nbsp;
-        <a href="https://www.tiktok.com/@dorahaccesorios?_r=1&_t=ZS-999vy8eGjvI" target="_blank" rel="noopener">
-          TikTok
-        </a>
-        &nbsp;·&nbsp;
-        <a href={`https://wa.me/${PHONE}`} target="_blank" rel="noopener">
-          WhatsApp
-        </a>
+
+      <div className={styles.credit}>
+        <span>Sitio creado por </span>
+        <strong>Lautaro Yudi</strong>
       </div>
     </footer>
   );
@@ -34,7 +86,7 @@ export function FloatingSocial() {
         className="fs-whatsapp"
         href={`https://wa.me/${PHONE}?text=${waText}`}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         aria-label="WhatsApp"
       >
         <svg viewBox="0 0 24 24">
@@ -43,9 +95,9 @@ export function FloatingSocial() {
       </a>
       <a
         className="fs-instagram"
-        href="https://www.instagram.com/dorah.accesorios/"
+        href={INSTAGRAM_URL}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         aria-label="Instagram"
       >
         <svg viewBox="0 0 24 24">
@@ -54,9 +106,9 @@ export function FloatingSocial() {
       </a>
       <a
         className="fs-tiktok"
-        href="https://www.tiktok.com/@dorahaccesorios?_r=1&_t=ZS-999vy8eGjvI"
+        href={TIKTOK_URL}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         aria-label="TikTok"
       >
         <svg viewBox="0 0 24 24">
