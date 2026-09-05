@@ -174,22 +174,52 @@ export default function HomePage({ onNavigate }: { onNavigate: (page: PageId) =>
       <section className={styles.about}>
         <div className={styles.aboutIntro}>
           <span className={styles.sectionKicker}>Quiénes somos</span>
-          <h2>Una experiencia pensada para elegir sin apuro.</h2>
+          <h2>Detalles que hablan de vos.</h2>
+          <p className={styles.aboutLead}>
+            Somos una empresa dedicada a la venta y comercialización de perfumes y accesorios,
+            ofreciendo productos seleccionados para quienes buscan calidad, variedad y una atención personalizada.
+          </p>
         </div>
 
-        <div className={styles.aboutColumns}>
-          <p>
-            En Dorah vas a encontrar perfumes árabes y de diseñador, además de
-            probadores para conocer la fragancia antes de elegirla.
-          </p>
-          <p>
-            También contamos con decants y una selección de accesorios,
-            incorporando nuevas opciones y tendencias constantemente.
-          </p>
-          <p>
-            Podés consultarnos disponibilidad y armar tu pedido directamente
-            por WhatsApp con una atención personalizada.
-          </p>
+        <div className={styles.aboutStory}>
+          <div className={styles.aboutText}>
+            <p>
+              En nuestra sección de perfumería contamos con una amplia variedad de perfumes árabes y perfumes de
+              diseñador originales, pensados para diferentes gustos y estilos.
+            </p>
+            <p>
+              Además, contamos con probadores, para que puedas conocer y probar las fragancias antes de elegir tu perfume.
+            </p>
+            <p>
+              También ofrecemos decants, una excelente opción para descubrir nuevas fragancias, probarlas durante
+              varios días o llevar tus perfumes favoritos en un formato práctico.
+            </p>
+          </div>
+
+          <div className={styles.aboutPhoto}>
+            <Image
+              src="/local-dorah.jpg"
+              alt="Local de Dorah — Necochea 330, Resistencia"
+              fill
+              className={styles.aboutPhotoImage}
+              sizes="(max-width: 820px) 92vw, 42vw"
+            />
+          </div>
+
+          <div className={styles.aboutText}>
+            <p>
+              Pero nuestra propuesta no termina en la perfumería. En nuestra sección de accesorios vas a encontrar
+              una amplia variedad de productos para complementar tu estilo, como cadenas, pulseras, collares,
+              pañuelos, billeteras, carteras y mucho más.
+            </p>
+            <p>
+              Incorporamos constantemente opciones de temporada y nuevas tendencias.
+            </p>
+            <p>
+              Contamos con múltiples medios de pago: efectivo, transferencia bancaria, tarjetas de crédito hasta
+              3 cuotas sin interés y créditos personales.
+            </p>
+          </div>
         </div>
 
         <div className={styles.aboutFooter}>
