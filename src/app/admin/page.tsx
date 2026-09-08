@@ -159,8 +159,17 @@ export default function AdminPage() {
     );
   }
 
-  return (
-    <>
+return (
+  <>
+    <div style={styles.headerActions}>
+      <a
+        href="/"
+        style={styles.storeButton}
+        title="Volver a la tienda"
+      >
+        VER TIENDA
+      </a>
+
       <button
         type="button"
         onClick={handleLogout}
@@ -169,10 +178,11 @@ export default function AdminPage() {
       >
         CERRAR SESIÓN
       </button>
+    </div>
 
-      <AdminApp />
-    </>
-  );
+    <AdminApp />
+  </>
+);
 }
 
 const styles: Record<string, React.CSSProperties> = {
@@ -307,19 +317,38 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "20px",
   },
 
-  logoutButton: {
-    position: "fixed",
-    top: "14px",
-    right: "18px",
-    zIndex: 1000,
-    border: "1px solid #c9a455",
-    borderRadius: "3px",
-    background: "#0a0908",
-    color: "#eaddb0",
-    padding: "9px 13px",
-    fontSize: "10px",
-    letterSpacing: "0.1em",
-    cursor: "pointer",
-    boxShadow: "0 4px 15px rgba(0,0,0,.2)",
+ headerActions: {
+  position: "fixed",
+  top: "14px",
+  right: "18px",
+  zIndex: 1000,
+  display: "flex",
+  gap: "10px",
+  alignItems: "center",
+},
+
+storeButton: {
+  border: "1px solid #c9a455",
+  borderRadius: "3px",
+  background: "#0a0908",
+  color: "#eaddb0",
+  padding: "9px 13px",
+  fontSize: "10px",
+  letterSpacing: "0.1em",
+  cursor: "pointer",
+  textDecoration: "none",
+  boxShadow: "0 4px 15px rgba(0,0,0,.2)",
+},
+
+logoutButton: {
+  border: "1px solid #c9a455",
+  borderRadius: "3px",
+  background: "#0a0908",
+  color: "#eaddb0",
+  padding: "9px 13px",
+  fontSize: "10px",
+  letterSpacing: "0.1em",
+  cursor: "pointer",
+  boxShadow: "0 4px 15px rgba(0,0,0,.2)",
   },
 };
