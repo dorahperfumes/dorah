@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = "https://dorah-murex.vercel.app";
+const SITE_URL = "https://www.dorah.com.ar";
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -3,7 +3,7 @@ import PWARegister from "@/components/PWARegister";
 import "./globals.css";
 import "./color-lock.css";
 
-const SITE_URL = "https://dorah-murex.vercel.app";
+const SITE_URL = "https://www.dorah.com.ar";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
