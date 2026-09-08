@@ -5,7 +5,7 @@ import {
   publicProductImages,
 } from "@/lib/products-public-server";
 
-const SITE_URL = "https://dorah-murex.vercel.app";
+const SITE_URL = "https://www.dorah.com.ar";
 
 const CATEGORY_LABELS: Record<string, string> = {
   arabes: "Perfumes Árabes",
