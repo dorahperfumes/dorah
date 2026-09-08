@@ -420,7 +420,7 @@ export default function AdminApp() {
         showNotice("Producto creado correctamente.");
       }
       clearPhotoItems(simplePhotos);
-      setModalSimpleOpen(false);
+      // Mantener el formulario abierto para seguir cargando productos.
       await loadCategory(simpleCat);
     } catch (err) {
       alert("No se pudo guardar el producto. Revisá tu conexión a Supabase.");
@@ -461,7 +461,7 @@ export default function AdminApp() {
         showNotice("Decant creado correctamente.");
       }
       clearPhotoItems(decantPhotos);
-      setModalDecantOpen(false);
+      // Mantener el formulario abierto para seguir cargando productos.
       await loadCategory("decants");
     } catch (err) {
       alert("No se pudo guardar el decant. Revisá tu conexión a Supabase.");
@@ -536,7 +536,7 @@ export default function AdminApp() {
     );
   }
 
-  function FilterBar({ cat }: { cat: DBCategory }) {
+  function renderFilterBar({ cat }: { cat: DBCategory }) {
     const totals = categoryTotals(cat);
     const visible = filteredProducts(cat).length;
     return (
@@ -822,7 +822,7 @@ export default function AdminApp() {
                 + Nuevo producto
               </button>
             </div>
-            <FilterBar cat={view as DBCategory} />
+            {renderFilterBar({ cat: view as DBCategory })}
             <SimpleProductList cat={view as "arabes" | "disenador" | "accesorios"} />
           </section>
         )}
@@ -837,7 +837,7 @@ export default function AdminApp() {
               </div>
               <button className="btn btn-gold" onClick={openNewDecant}>+ Nuevo decant</button>
             </div>
-            <FilterBar cat="decants" />
+            {renderFilterBar({ cat: "decants" })}
             <DecantProductList />
           </section>
         )}
@@ -908,7 +908,7 @@ export default function AdminApp() {
       </div>
 
       {/* Modal producto simple */}
-      <div className={`modal-overlay${modalSimpleOpen ? " show" : ""}`} onClick={(e) => e.target === e.currentTarget && closeSimpleModal()}>
+      <div className={`modal-overlay${modalSimpleOpen ? " show" : ""}`} >
         <div className="modal" role="dialog" aria-modal="true" aria-label={editingSimpleId ? "Editar producto" : "Nuevo producto"}>
           <div className="modal-head">
             <div>
