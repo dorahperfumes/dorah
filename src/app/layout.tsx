@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import PWARegister from "@/components/PWARegister";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import "./color-lock.css";
 
@@ -92,6 +93,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <PWARegister />
         {children}
+        <Analytics />
       </body>
     </html>
   );
