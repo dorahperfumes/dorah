@@ -120,18 +120,14 @@ export default async function ProductSeoLayout({
           },
         }
       : {}),
-    ...(product.price
-      ? {
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "ARS",
-            price: product.price,
-            availability: "https://schema.org/InStock",
-            itemCondition: "https://schema.org/NewCondition",
-            url: `${SITE_URL}/perfumes/${product.id}`,
-          },
-        }
-      : {}),
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "ARS",
+          price: product.price || "0",
+          availability: "https://schema.org/InStock",
+          itemCondition: "https://schema.org/NewCondition",
+          url: `${SITE_URL}/perfumes/${product.id}`,
+      },
     ...(gender ? { audience: { "@type": "PeopleAudience", suggestedGender: gender } } : {}),
   };
 
