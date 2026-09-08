@@ -111,11 +111,24 @@ export default async function ProductSeoLayout({
     image: images,
     url: `${SITE_URL}/perfumes/${product.id}`,
     category,
+    sku: String(product.id),
     ...(brand
       ? {
           brand: {
             "@type": "Brand",
             name: brand,
+          },
+        }
+      : {}),
+    ...(product.price
+      ? {
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "ARS",
+            price: product.price,
+            availability: "https://schema.org/InStock",
+            itemCondition: "https://schema.org/NewCondition",
+            url: `${SITE_URL}/perfumes/${product.id}`,
           },
         }
       : {}),
