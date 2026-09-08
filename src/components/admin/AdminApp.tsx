@@ -331,6 +331,20 @@ export default function AdminApp() {
     items.forEach(revokeNewPhoto);
   }
 
+  function resetSimpleFormForNewProduct() {
+    clearPhotoItems(simplePhotos);
+    setSimpleForm(emptySimpleForm());
+    setSimplePhotos([]);
+    setEditingSimpleId(null);
+  }
+
+  function resetDecantFormForNewProduct() {
+    clearPhotoItems(decantPhotos);
+    setDecantForm(emptyDecantForm());
+    setDecantPhotos([]);
+    setEditingDecantId(null);
+  }
+
   function closeSimpleModal() {
     clearPhotoItems(simplePhotos);
     setModalSimpleOpen(false);
@@ -393,83 +407,95 @@ export default function AdminApp() {
   }
 
   async function saveSimple() {
-    if (!simpleForm.nombre.trim()) {
-      alert("Poné al menos el nombre del producto.");
-      return;
-    }
-    setSavingSimple(true);
-    try {
-      const image_urls = await uploadPhotosInOrder(simplePhotos);
-      const payload = {
-        category: simpleCat,
-        name: simpleForm.nombre.trim(),
-        brand: simpleForm.marca.trim() || null,
-        price: simpleForm.precio ? Number(simpleForm.precio) : null,
-        description: simpleForm.desc.trim() || null,
-        active: simpleForm.disponible,
-        gender: simpleForm.gender || null,
-        image_url: image_urls[0] || null,
-        image_urls,
-      };
-
-      if (editingSimpleId) {
-        await updateProduct(editingSimpleId, payload);
-        showNotice("Producto actualizado correctamente.");
-      } else {
-        await insertProduct(payload);
-        showNotice("Producto creado correctamente.");
-      }
-      clearPhotoItems(simplePhotos);
-      // Mantener el formulario abierto para seguir cargando productos.
-      await loadCategory(simpleCat);
-    } catch (err) {
-      alert("No se pudo guardar el producto. Revisá tu conexión a Supabase.");
-      console.error(err);
-    } finally {
-      setSavingSimple(false);
-    }
+  if (!simpleForm.nombre.trim()) {
+    alert("Poné al menos el nombre del producto.");
+    return;
   }
 
-  async function saveDecant() {
-    if (!decantForm.nombre.trim()) {
-      alert("Poné al menos el nombre del perfume.");
-      return;
-    }
-    setSavingDecant(true);
-    try {
-      const image_urls = await uploadPhotosInOrder(decantPhotos);
-      const payload = {
-        category: "decants" as DBCategory,
-        name: decantForm.nombre.trim(),
-        brand: decantForm.marca.trim() || null,
-        price_5ml: decantForm.precio5 ? Number(decantForm.precio5) : null,
-        price_10ml: decantForm.precio10 ? Number(decantForm.precio10) : null,
-        active_5ml: decantForm.disp5,
-        active_10ml: decantForm.disp10,
-        active: decantForm.disponible,
-        description: decantForm.desc.trim() || null,
-        gender: decantForm.gender || null,
-        image_url: image_urls[0] || null,
-        image_urls,
-      };
+  setSavingSimple(true);
 
-      if (editingDecantId) {
-        await updateProduct(editingDecantId, payload);
-        showNotice("Decant actualizado correctamente.");
-      } else {
-        await insertProduct(payload);
-        showNotice("Decant creado correctamente.");
-      }
-      clearPhotoItems(decantPhotos);
-      // Mantener el formulario abierto para seguir cargando productos.
-      await loadCategory("decants");
-    } catch (err) {
-      alert("No se pudo guardar el decant. Revisá tu conexión a Supabase.");
-      console.error(err);
-    } finally {
-      setSavingDecant(false);
+  try {
+    const image_urls = await uploadPhotosInOrder(simplePhotos);
+
+    const payload = {
+      category: simpleCat,
+      name: simpleForm.nombre.trim(),
+      brand: simpleForm.marca.trim() || null,
+      price: simpleForm.precio ? Number(simpleForm.precio) : null,
+      description: simpleForm.desc.trim() || null,
+      active: simpleForm.disponible,
+      gender: simpleForm.gender || null,
+      image_url: image_urls[0] || null,
+      image_urls,
+    };
+
+    if (editingSimpleId) {
+      await updateProduct(editingSimpleId, payload);
+      showNotice("Producto actualizado correctamente.");
+    } else {
+      await insertProduct(payload);
+      showNotice("Producto creado correctamente.");
     }
+
+    // Limpiar formulario y dejar modal abierto para seguir cargando
+    resetSimpleFormForNewProduct();
+
+    await loadCategory(simpleCat);
+
+  } catch (err) {
+    alert("No se pudo guardar el producto. Revisá tu conexión a Supabase.");
+    console.error(err);
+  } finally {
+    setSavingSimple(false);
   }
+}
+
+async function saveDecant() {
+  if (!decantForm.nombre.trim()) {
+    alert("Poné al menos el nombre del perfume.");
+    return;
+  }
+
+  setSavingDecant(true);
+
+  try {
+    const image_urls = await uploadPhotosInOrder(decantPhotos);
+
+    const payload = {
+      category: "decants" as DBCategory,
+      name: decantForm.nombre.trim(),
+      brand: decantForm.marca.trim() || null,
+      price_5ml: decantForm.precio5 ? Number(decantForm.precio5) : null,
+      price_10ml: decantForm.precio10 ? Number(decantForm.precio10) : null,
+      active_5ml: decantForm.disp5,
+      active_10ml: decantForm.disp10,
+      active: decantForm.disponible,
+      description: decantForm.desc.trim() || null,
+      gender: decantForm.gender || null,
+      image_url: image_urls[0] || null,
+      image_urls,
+    };
+
+    if (editingDecantId) {
+      await updateProduct(editingDecantId, payload);
+      showNotice("Decant actualizado correctamente.");
+    } else {
+      await insertProduct(payload);
+      showNotice("Decant creado correctamente.");
+    }
+
+    // Limpiar formulario y dejar modal abierto para seguir cargando
+    resetDecantFormForNewProduct();
+
+    await loadCategory("decants");
+
+  } catch (err) {
+    alert("No se pudo guardar el decant. Revisá tu conexión a Supabase.");
+    console.error(err);
+  } finally {
+    setSavingDecant(false);
+  }
+}
 
   async function toggleDisponible(cat: DBCategory, product: DBProduct) {
     const nextActive = !product.active;
