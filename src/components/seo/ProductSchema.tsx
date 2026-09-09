@@ -1,23 +1,20 @@
-type ProductSchemaProps = {
+export function ProductSchema(props: {
   name: string;
+  image?: string;
   description?: string;
-  image?: string[];
-  price?: string;
-  brand?: string;
-  url: string;
-};
-
-export default function ProductSchema(props: ProductSchemaProps) {
-  const data = {
+  price?: number | string;
+  id?: string;
+}) {
+  const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: props.name,
-    description: props.description,
-    image: props.image,
-    url: props.url,
-    ...(props.brand
-      ? { brand: { "@type": "Brand", name: props.brand } }
-      : {}),
+    image: props.image ? [props.image] : [],
+    description: props.description || "",
+    brand: {
+      "@type": "Brand",
+      name: "Dorah",
+    },
     ...(props.price
       ? {
           offers: {
@@ -25,7 +22,6 @@ export default function ProductSchema(props: ProductSchemaProps) {
             priceCurrency: "ARS",
             price: props.price,
             availability: "https://schema.org/InStock",
-            url: props.url,
           },
         }
       : {}),
@@ -35,7 +31,7 @@ export default function ProductSchema(props: ProductSchemaProps) {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+        __html: JSON.stringify(schema),
       }}
     />
   );
