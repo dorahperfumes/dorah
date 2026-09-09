@@ -12,23 +12,30 @@ async function getProduct(id: string) {
     .single();
 
   if (error || !data) return null;
+
   return data;
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const product = await getProduct(params.id);
+  const { id } = await params;
+
+  const product = await getProduct(id);
 
   if (!product) {
-    return { title: "Producto no encontrado | Dorah" };
+    return {
+      title: "Producto no encontrado | Dorah",
+    };
   }
 
   return {
     title: `${product.name} | Dorah Perfumes`,
-    description: product.description || `Comprá ${product.name} en Dorah Perfumes.`,
+    description:
+      product.description ||
+      `Comprá ${product.name} en Dorah Perfumes y Accesorios.`,
   };
 }
 
@@ -37,11 +44,15 @@ export default async function ProductLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const product = await getProduct(params.id);
+  const { id } = await params;
 
-  if (!product) notFound();
+  const product = await getProduct(id);
+
+  if (!product) {
+    notFound();
+  }
 
   const productSchema = {
     "@context": "https://schema.org",
