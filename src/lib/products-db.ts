@@ -72,17 +72,10 @@ export async function fetchPublicDecants(): Promise<DBProduct[]> {
 
   if (error) throw error;
 
-  const rows = ((data ?? []) as DBProduct[]).filter(
-    (item) =>
-      (item.active_5ml && item.price_5ml != null) ||
-      (item.active_10ml && item.price_10ml != null)
-  );
-
+  const rows = (data ?? []) as DBProduct[];
   const key = (item: DBProduct) =>
     `${(item.brand || "").trim().toLocaleLowerCase("es")}::${item.name.trim().toLocaleLowerCase("es")}`;
 
-  // Si existe el perfume original y un decant legado con el mismo nombre/marca,
-  // priorizamos el perfume original para evitar mostrarlo dos veces.
   const unifiedKeys = new Set(
     rows.filter((item) => item.category !== "decants").map(key)
   );
@@ -101,6 +94,19 @@ export async function fetchAdminProducts(category: DBCategory): Promise<DBProduc
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data as DBProduct[];
+}
+
+/** Perfumes habilitados como decant, para la vista de administración. */
+export async function fetchAdminDecants(): Promise<DBProduct[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .in("category", ["arabes", "disenador", "decants"])
+    .or("active_5ml.eq.true,active_10ml.eq.true")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as DBProduct[];
 }
 
 export async function insertProduct(payload: Partial<DBProduct>): Promise<DBProduct> {

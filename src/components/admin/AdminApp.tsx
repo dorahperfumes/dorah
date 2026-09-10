@@ -8,6 +8,7 @@ import {
   Gender,
   deleteProduct,
   fetchAdminProducts,
+  fetchAdminDecants,
   insertProduct,
   updateProduct,
   uploadProductPhotos,
@@ -237,7 +238,9 @@ export default function AdminApp() {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchAdminProducts(cat);
+      const data = cat === "decants"
+        ? await fetchAdminDecants()
+        : await fetchAdminProducts(cat);
       setProducts((previous) => ({ ...previous, [cat]: data }));
     } catch (err) {
       setError("No pudimos conectar con Supabase. Revisá la conexión y volvé a intentar.");
@@ -380,8 +383,8 @@ export default function AdminApp() {
       gender: p.gender || "",
       precio5: p.price_5ml != null ? String(p.price_5ml) : "",
       precio10: p.price_10ml != null ? String(p.price_10ml) : "",
-      disp5: p.active_5ml && p.price_5ml != null,
-      disp10: p.active_10ml && p.price_10ml != null,
+      disp5: p.active_5ml,
+      disp10: p.active_10ml,
     });
     setSimplePhotos(photoItemsFromProduct(p));
     setEditingSimpleId(p.id);
@@ -433,10 +436,24 @@ export default function AdminApp() {
       description: simpleForm.desc.trim() || null,
       active: simpleForm.disponible,
       gender: simpleForm.gender || null,
-      price_5ml: simpleCat === "accesorios" ? null : (simpleForm.precio5 ? Number(simpleForm.precio5) : null),
-      price_10ml: simpleCat === "accesorios" ? null : (simpleForm.precio10 ? Number(simpleForm.precio10) : null),
-      active_5ml: simpleCat === "accesorios" ? false : (simpleForm.disp5 && Boolean(simpleForm.precio5)),
-      active_10ml: simpleCat === "accesorios" ? false : (simpleForm.disp10 && Boolean(simpleForm.precio10)),
+      price_5ml:
+        simpleCat === "accesorios"
+          ? null
+          : simpleForm.disp5
+            ? Number(simpleForm.precio5 || 0)
+            : simpleForm.precio5 === ""
+              ? null
+              : Number(simpleForm.precio5),
+      price_10ml:
+        simpleCat === "accesorios"
+          ? null
+          : simpleForm.disp10
+            ? Number(simpleForm.precio10 || 0)
+            : simpleForm.precio10 === ""
+              ? null
+              : Number(simpleForm.precio10),
+      active_5ml: simpleCat === "accesorios" ? false : simpleForm.disp5,
+      active_10ml: simpleCat === "accesorios" ? false : simpleForm.disp10,
       image_url: image_urls[0] || null,
       image_urls,
     };
@@ -449,10 +466,16 @@ export default function AdminApp() {
       showNotice("Producto creado correctamente.");
     }
 
-    // Limpiar formulario y dejar modal abierto para seguir cargando
-    resetSimpleFormForNewProduct();
-
     await loadCategory(simpleCat);
+    if (simpleCat !== "accesorios") await loadCategory("decants");
+
+    if (editingSimpleId) {
+      clearPhotoItems(simplePhotos);
+      setModalSimpleOpen(false);
+      setEditingSimpleId(null);
+    } else {
+      resetSimpleFormForNewProduct();
+    }
 
   } catch (err) {
     alert("No se pudo guardar el producto. Revisá tu conexión a Supabase.");
@@ -636,7 +659,7 @@ async function saveDecant() {
   function EmptyState({ cat }: { cat: DBCategory }) {
     const total = products[cat].length;
     if (loading && total === 0) return <div className="empty-state">Cargando productos...</div>;
-    if (total === 0) return <div className="empty-state">Todavía no cargaste productos en esta categoría.</div>;
+    if (total === 0) return <div className="empty-state">Todavía no hay perfumes activados como decant.</div>;
     return <div className="empty-state">No hay productos que coincidan con estos filtros.</div>;
   }
 
@@ -753,10 +776,23 @@ async function saveDecant() {
             </div>
 
             <div className="row-actions">
-              <button className="icon-btn" title="Editar" aria-label={`Editar ${p.name}`} onClick={() => openEditDecant(p)}>✎</button>
-              <button className="icon-btn" title="Duplicar" aria-label={`Duplicar ${p.name}`} onClick={() => duplicateProduct("decants", p)}>⧉</button>
-              <button className="icon-btn" title={p.active ? "Pausar" : "Activar"} aria-label={p.active ? `Pausar ${p.name}` : `Activar ${p.name}`} onClick={() => toggleDisponible("decants", p)}>⏻</button>
-              <button className="icon-btn danger-icon" title="Eliminar" aria-label={`Eliminar ${p.name}`} onClick={() => removeProduct("decants", p)}>🗑</button>
+              <button
+                className="icon-btn"
+                title="Editar decant"
+                aria-label={`Editar ${p.name}`}
+                onClick={() =>
+                  p.category === "arabes" || p.category === "disenador"
+                    ? openEditSimple(p.category, p)
+                    : openEditDecant(p)
+                }
+              >✎</button>
+              {p.category === "decants" && (
+                <>
+                  <button className="icon-btn" title="Duplicar" aria-label={`Duplicar ${p.name}`} onClick={() => duplicateProduct("decants", p)}>⧉</button>
+                  <button className="icon-btn" title={p.active ? "Pausar" : "Activar"} aria-label={p.active ? `Pausar ${p.name}` : `Activar ${p.name}`} onClick={() => toggleDisponible("decants", p)}>⏻</button>
+                  <button className="icon-btn danger-icon" title="Eliminar" aria-label={`Eliminar ${p.name}`} onClick={() => removeProduct("decants", p)}>🗑</button>
+                </>
+              )}
             </div>
           </article>
         ))}
@@ -871,7 +907,7 @@ async function saveDecant() {
               <div>
                 <span className="section-kicker">GESTIÓN DE CATÁLOGO</span>
                 <h2>Decants</h2>
-                <p className="sub">Los nuevos decants se activan editando el perfume original. Esta vista conserva tus decants cargados anteriormente.</p>
+                <p className="sub">Acá aparecen automáticamente los perfumes que tengan 5 ml o 10 ml activado. Se editan desde la misma ficha del perfume.</p>
               </div>
               <button className="btn btn-gold" onClick={() => changeView("arabes")}>Activar desde un perfume</button>
             </div>
