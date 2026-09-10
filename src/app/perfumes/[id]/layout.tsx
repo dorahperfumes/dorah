@@ -103,32 +103,93 @@ export default async function ProductSeoLayout({
     `${product.name}${brand ? ` de ${brand}` : ""} disponible en Dorah.`
   );
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description,
-    image: images,
-    url: `${SITE_URL}/perfumes/${product.id}`,
-    category,
-    sku: String(product.id),
-    ...(brand
-      ? {
-          brand: {
-            "@type": "Brand",
-            name: brand,
-          },
-        }
-      : {}),
+  const productUrl = `${SITE_URL}/perfumes/${product.id}`;
+  const numericPrice = Number(product.price);
+  const hasValidOffer = Number.isFinite(numericPrice) && numericPrice > 0;
+  const hasProductImage = images.length > 0;
+
+  // Google exige un precio mayor que cero para Merchant listings. Los productos
+  // marcados como "Consultar por WhatsApp" no deben publicar un Offer ficticio
+  // con precio 0 ni reseñas inventadas. En esos casos usamos WebPage +
+  // BreadcrumbList y reservamos Product + Offer para productos con precio real.
+  const mainEntity = hasValidOffer && hasProductImage
+    ? {
+        "@type": "Product",
+        "@id": `${productUrl}#product`,
+        name: product.name,
+        description,
+        image: images,
+        url: productUrl,
+        category,
+        sku: String(product.id),
+        ...(brand
+          ? {
+              brand: {
+                "@type": "Brand",
+                name: brand,
+              },
+            }
+          : {}),
         offers: {
           "@type": "Offer",
+          url: productUrl,
           priceCurrency: "ARS",
-          price: product.price || "0",
+          price: numericPrice,
           availability: "https://schema.org/InStock",
           itemCondition: "https://schema.org/NewCondition",
-          url: `${SITE_URL}/perfumes/${product.id}`,
+          seller: {
+            "@type": "Organization",
+            name: "Dorah Perfumes & Accesorios",
+            url: SITE_URL,
+          },
+        },
+        ...(gender
+          ? {
+              audience: {
+                "@type": "PeopleAudience",
+                suggestedGender: gender,
+              },
+            }
+          : {}),
+      }
+    : {
+        "@type": "WebPage",
+        "@id": `${productUrl}#webpage`,
+        url: productUrl,
+        name: product.name,
+        description,
+        ...(images[0] ? { primaryImageOfPage: images[0] } : {}),
+      };
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      mainEntity,
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${productUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Inicio",
+            item: SITE_URL,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: category,
+            item: `${SITE_URL}/?section=${product.category}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: product.name,
+            item: productUrl,
+          },
+        ],
       },
-    ...(gender ? { audience: { "@type": "PeopleAudience", suggestedGender: gender } } : {}),
+    ],
   };
 
   return (
