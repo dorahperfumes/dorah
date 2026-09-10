@@ -1,19 +1,28 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import {
+  fetchPublicProductByIdServer,
+  publicProductImages,
+} from "@/lib/products-public-server";
 
 const SITE_URL = "https://www.dorah.com.ar";
 
-async function getProduct(id: string) {
-  const { data, error } = await supabase
-    .from("perfumes")
-    .select("*")
-    .eq("id", id)
-    .single();
+const CATEGORY_LABELS: Record<string, string> = {
+  arabes: "Perfumes Árabes",
+  disenador: "Perfumes de Diseñador",
+  decants: "Decants",
+  accesorios: "Accesorios",
+};
 
-  if (error || !data) return null;
+const GENDER_LABELS: Record<string, string> = {
+  hombre: "Hombre",
+  mujer: "Mujer",
+  unisex: "Unisex",
+};
 
-  return data;
+function cleanDescription(value: string | null | undefined, fallback: string) {
+  const text = (value || fallback).replace(/\s+/g, " ").trim();
+  return text.length > 160 ? `${text.slice(0, 157).trimEnd()}...` : text;
 }
 
 export async function generateMetadata({
@@ -22,61 +31,104 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-
-  const product = await getProduct(id);
+  const product = await fetchPublicProductByIdServer(id);
 
   if (!product) {
     return {
-      title: "Producto no encontrado | Dorah",
+      title: { absolute: "Producto no disponible | Dorah" },
+      description: "Este producto no está disponible actualmente en Dorah.",
+      robots: { index: false, follow: false },
     };
   }
 
+  const brand = product.brand?.trim();
+  const brandSuffix =
+    brand && !product.name.toLowerCase().includes(brand.toLowerCase())
+      ? ` de ${brand}`
+      : "";
+  const fallbackDescription = `${product.name}${brandSuffix} en Dorah Perfumes & Accesorios. Consultá disponibilidad y realizá tu pedido por WhatsApp.`;
+  const description = cleanDescription(product.description, fallbackDescription);
+  const images = publicProductImages(product);
+  const image = images[0] || "/dorah-logo.png";
+  const canonical = `/perfumes/${product.id}`;
+  const title = `${product.name}${brand ? ` — ${brand}` : ""} | Dorah`;
+
   return {
-    title: `${product.name} | Dorah Perfumes`,
-    description:
-      product.description ||
-      `Comprá ${product.name} en Dorah Perfumes y Accesorios.`,
+    title: { absolute: title },
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: "Dorah Perfumes & Accesorios",
+      locale: "es_AR",
+      type: "website",
+      images: [
+        {
+          url: image,
+          alt: `${product.name}${brand ? ` - ${brand}` : ""}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
   };
 }
 
-export default async function ProductLayout({
+export default async function ProductSeoLayout({
   children,
   params,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const product = await fetchPublicProductByIdServer(id);
 
-  const product = await getProduct(id);
+  if (!product) return children;
 
-  if (!product) {
-    notFound();
-  }
+  const images = publicProductImages(product);
+  const brand = product.brand?.trim();
+  const category = CATEGORY_LABELS[product.category] ?? "Perfumes y accesorios";
+  const gender = product.gender ? GENDER_LABELS[product.gender] : undefined;
+  const description = cleanDescription(
+    product.description,
+    `${product.name}${brand ? ` de ${brand}` : ""} disponible en Dorah.`
+  );
 
-  const productSchema = {
+  const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: product.image ? [product.image] : [],
-    description: product.description || "",
-    brand: {
-      "@type": "Brand",
-      name: "Dorah",
-    },
-    ...(product.price
+    description,
+    image: images,
+    url: `${SITE_URL}/perfumes/${product.id}`,
+    category,
+    sku: String(product.id),
+    ...(brand
       ? {
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "ARS",
-            price: product.price,
-            availability: product.stock
-              ? "https://schema.org/InStock"
-              : "https://schema.org/OutOfStock",
-            url: `${SITE_URL}/perfumes/${product.id}`,
+          brand: {
+            "@type": "Brand",
+            name: brand,
           },
         }
       : {}),
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "ARS",
+          price: product.price || "0",
+          availability: "https://schema.org/InStock",
+          itemCondition: "https://schema.org/NewCondition",
+          url: `${SITE_URL}/perfumes/${product.id}`,
+      },
+    ...(gender ? { audience: { "@type": "PeopleAudience", suggestedGender: gender } } : {}),
   };
 
   return (
@@ -84,7 +136,7 @@ export default async function ProductLayout({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productSchema),
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
       {children}
