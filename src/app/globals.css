@@ -326,3 +326,14 @@
     display:flex; align-items:center; justify-content:center; cursor:zoom-out; padding:20px;
   }
   .lightbox-overlay img{max-width:100%; max-height:100%; object-fit:contain;}
+
+/* Dorah Mobile Commerce V1: catálogo compacto de dos columnas */
+@media (max-width: 700px) {
+  .page { padding-left: 18px; padding-right: 18px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .card-body { padding: 10px 10px 12px; gap: 4px; }
+  .card-body .brand { font-size: 0.54rem; letter-spacing: 0.12em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-body h4 { font-size: 1.02rem; line-height: 1.05; min-height: 2.1em; }
+  .card-body .price { font-size: 0.78rem; }
+  .card-cta { margin-top: 7px; min-height: 38px; padding: 7px 4px; font-size: 0.58rem; letter-spacing: 0.08em; line-height: 1.2; }
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
 import { BottleIcon, RingIcon } from "./icons";
@@ -30,8 +30,18 @@ export default function CartDrawer() {
     totalQty,
     subtotal,
     hasUnknownPrices,
-    waLink,
+    buildWaLink,
   } = useCart();
+
+  const [customerName, setCustomerName] = useState("");
+  const [delivery, setDelivery] = useState<"" | "Retiro en local" | "Envío">("");
+  const [location, setLocation] = useState("");
+  const [note, setNote] = useState("");
+
+  const waLink = useMemo(
+    () => buildWaLink({ name: customerName, delivery, location, note }),
+    [buildWaLink, customerName, delivery, location, note]
+  );
 
   useEffect(() => {
     if (!isOpen) return;
@@ -187,13 +197,69 @@ export default function CartDrawer() {
               </div>
             )}
 
+            <div className={styles.checkout}>
+              <span className={styles.checkoutTitle}>DATOS PARA PREPARAR EL PEDIDO</span>
+              <label className={styles.field}>
+                <span>Nombre</span>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(event) => setCustomerName(event.target.value)}
+                  placeholder="Tu nombre"
+                  autoComplete="name"
+                />
+              </label>
+
+              <div className={styles.deliveryGroup}>
+                <span>Entrega</span>
+                <div className={styles.deliveryOptions}>
+                  <button
+                    type="button"
+                    className={delivery === "Retiro en local" ? styles.deliveryActive : ""}
+                    onClick={() => { setDelivery("Retiro en local"); setLocation(""); }}
+                  >
+                    Retiro en local
+                  </button>
+                  <button
+                    type="button"
+                    className={delivery === "Envío" ? styles.deliveryActive : ""}
+                    onClick={() => setDelivery("Envío")}
+                  >
+                    Envío
+                  </button>
+                </div>
+              </div>
+
+              {delivery === "Envío" && (
+                <label className={styles.field}>
+                  <span>Localidad</span>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(event) => setLocation(event.target.value)}
+                    placeholder="¿A dónde lo enviamos?"
+                  />
+                </label>
+              )}
+
+              <label className={styles.field}>
+                <span>Nota <em>opcional</em></span>
+                <input
+                  type="text"
+                  value={note}
+                  onChange={(event) => setNote(event.target.value)}
+                  placeholder="Ej. horario, consulta o aclaración"
+                />
+              </label>
+            </div>
+
             <a
               className={styles.send}
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <span>ENVIAR PEDIDO POR WHATSAPP</span>
+              <span>CONTINUAR POR WHATSAPP</span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.7 9.7 0 0 1-3.8-.9L3 20.5l1.5-5A8.4 8.4 0 1 1 21 11.5Z" />
                 <path d="M8.2 8.1c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.8 1.8c.1.3.1.5-.1.7l-.6.8c-.2.2-.1.4 0 .6.6 1.1 1.5 2 2.6 2.6.2.1.4.2.6 0l.8-1c.2-.2.4-.3.7-.2l1.9.9c.3.1.4.3.4.5 0 .4-.2 1.3-.7 1.8-.5.5-1.2.8-2 .8-.6 0-1.3-.2-2.1-.5-1.3-.5-2.7-1.4-3.9-2.6-1-1-1.8-2.1-2.3-3.2-.4-.8-.6-1.6-.6-2.2 0-.7.2-1.3.8-1.9Z" />

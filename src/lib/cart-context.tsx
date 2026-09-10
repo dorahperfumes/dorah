@@ -28,6 +28,7 @@ interface CartContextValue {
   subtotal: number;
   hasUnknownPrices: boolean;
   waLink: string;
+  buildWaLink: (details?: { name?: string; delivery?: string; location?: string; note?: string }) => string;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -175,53 +176,52 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [cart]
   );
 
-  const waLink = useMemo(() => {
+  function buildWaLink(details?: {
+    name?: string;
+    delivery?: string;
+    location?: string;
+    note?: string;
+  }) {
     if (cart.length === 0) return "#";
 
-    const lines: string[] = [
-      "Hola Dorah 👋",
-      "Quiero consultar este pedido:",
-      "",
-    ];
+    const lines: string[] = ["Hola Dorah 👋", "Quiero realizar este pedido:", ""];
 
-    cart.forEach((item, index) => {
+    cart.forEach((item) => {
       const unitPrice = priceNumber(item.price);
       const size = item.size ? ` — ${item.size}` : "";
       const brand = item.brand ? ` — ${item.brand}` : "";
-
-      lines.push(`*${item.name}${brand}${size}*`);
-      lines.push(`Cantidad: ${item.qty}`);
-
-      if (unitPrice == null) {
-        lines.push("Precio: A confirmar");
-      } else {
-        lines.push(`Precio unitario: ${money(unitPrice)}`);
-        lines.push(`Subtotal: ${money(unitPrice * item.qty)}`);
-      }
-
-      if (index < cart.length - 1) {
-        lines.push("");
-      }
+      const total = unitPrice == null ? "Precio a confirmar" : money(unitPrice * item.qty);
+      lines.push(`${item.qty}× *${item.name}*${brand}${size}`);
+      lines.push(total);
+      lines.push("");
     });
-
-    lines.push("");
 
     if (subtotal > 0) {
       lines.push(
         hasUnknownPrices
-          ? `*Subtotal conocido: ${money(subtotal)}*`
-          : `*Total estimado: ${money(subtotal)}*`
+          ? `*SUBTOTAL CONOCIDO: ${money(subtotal)}*`
+          : `*TOTAL ESTIMADO: ${money(subtotal)}*`
       );
     }
 
-    if (hasUnknownPrices) {
-      lines.push("Los productos sin precio se confirman al responder el mensaje.");
-    }
+    if (hasUnknownPrices) lines.push("Hay productos con precio a confirmar.");
+
+    const name = details?.name?.trim();
+    const delivery = details?.delivery?.trim();
+    const location = details?.location?.trim();
+    const note = details?.note?.trim();
+
+    if (name || delivery || location || note) lines.push("");
+    if (name) lines.push(`Nombre: ${name}`);
+    if (delivery) lines.push(`Entrega: ${delivery}`);
+    if (location) lines.push(`Localidad: ${location}`);
+    if (note) lines.push(`Nota: ${note}`);
 
     lines.push("", "¿Me confirman disponibilidad y total final?");
-
     return `https://wa.me/${PHONE}?text=${encodeURIComponent(lines.join("\n"))}`;
-  }, [cart, subtotal, hasUnknownPrices]);
+  }
+
+  const waLink = useMemo(() => buildWaLink(), [cart, subtotal, hasUnknownPrices]);
 
   return (
     <CartContext.Provider
@@ -240,6 +240,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         subtotal,
         hasUnknownPrices,
         waLink,
+        buildWaLink,
       }}
     >
       {children}

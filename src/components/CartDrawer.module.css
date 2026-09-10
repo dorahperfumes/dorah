@@ -439,3 +439,90 @@
     transition: none;
   }
 }
+
+/* Checkout corto antes de continuar a WhatsApp */
+.checkout {
+  margin: 14px 0 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(141, 107, 44, 0.22);
+  display: grid;
+  gap: 10px;
+}
+
+.checkoutTitle {
+  color: #80601f;
+  font: 600 0.6rem Arial, sans-serif;
+  letter-spacing: 0.13em;
+}
+
+.field,
+.deliveryGroup {
+  display: grid;
+  gap: 5px;
+  color: #665b49;
+  font: 0.67rem Arial, sans-serif;
+}
+
+.field span em {
+  color: #958a77;
+  font-style: normal;
+  font-size: 0.61rem;
+}
+
+.field input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 11px;
+  border: 1px solid rgba(141, 107, 44, 0.28);
+  border-radius: 0;
+  outline: 0;
+  background: rgba(255, 255, 255, 0.42);
+  color: #211a10;
+  font: 0.76rem Arial, sans-serif;
+}
+
+.field input:focus {
+  border-color: #9d762c;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.deliveryOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.deliveryOptions button {
+  min-height: 42px;
+  padding: 7px 8px;
+  border: 1px solid rgba(141, 107, 44, 0.28);
+  background: rgba(255, 255, 255, 0.32);
+  color: #5e513b;
+  font: 0.68rem Arial, sans-serif;
+  cursor: pointer;
+}
+
+.deliveryOptions .deliveryActive {
+  border-color: #17130d;
+  background: #17130d;
+  color: #eadca9;
+}
+
+@media (max-width: 560px) {
+  .foot {
+    max-height: 52dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .checkout {
+    margin-top: 10px;
+    padding-top: 11px;
+    gap: 8px;
+  }
+
+  .field input,
+  .deliveryOptions button {
+    min-height: 40px;
+  }
+}

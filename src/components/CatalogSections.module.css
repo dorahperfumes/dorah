@@ -500,3 +500,20 @@
     letter-spacing: 0.14em !important;
   }
 }
+
+/* Dorah Mobile Commerce V1: menos ruido visual dentro de cada tarjeta */
+@media (max-width: 700px) {
+  .detailsLink { display: none; }
+
+  .cardGallery,
+  .galleryPlaceholder { aspect-ratio: 1 / 1.08; }
+
+  .galleryArrow { display: none; }
+  .galleryTapHint { display: none; }
+  .galleryDots { bottom: 8px; gap: 3px; }
+  .galleryDot, .galleryDotActive { width: 4px; height: 4px; }
+  .galleryDotActive { width: 12px; }
+  .galleryCounter { min-width: 30px; height: 20px; padding: 0 6px; font-size: 0.57rem; }
+
+  :global(.gender-tag) { display: none !important; }
+}
