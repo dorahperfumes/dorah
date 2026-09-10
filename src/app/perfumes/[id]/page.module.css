@@ -1001,3 +1001,83 @@
     padding-right: max(12px, env(safe-area-inset-right));
   }
 }
+
+/* Carrusel de recomendaciones */
+.relatedCarousel {
+  position: relative;
+}
+
+.relatedGrid {
+  display: flex;
+  justify-content: flex-start;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  padding: 0 2px 12px;
+}
+
+.relatedGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.relatedCard {
+  flex: 0 0 calc((100% - 54px) / 4.18);
+  scroll-snap-align: start;
+}
+
+.relatedArrow {
+  position: absolute;
+  z-index: 4;
+  top: 42%;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(107, 83, 34, 0.28);
+  border-radius: 50%;
+  background: rgba(250, 246, 235, 0.96);
+  color: var(--ink);
+  box-shadow: 0 8px 24px rgba(35, 25, 12, 0.12);
+  cursor: pointer;
+  font: 300 2rem/1 "Cormorant Garamond", serif;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.relatedArrow:hover {
+  background: #fff;
+  transform: scale(1.05);
+}
+
+.relatedArrowPrev { left: -23px; }
+.relatedArrowNext { right: -23px; }
+
+@media (max-width: 899px) {
+  .relatedCard {
+    flex-basis: calc((100% - 18px) / 2.25);
+  }
+
+  .relatedArrow {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .relatedSection {
+    margin-top: 64px;
+    padding-top: 34px;
+  }
+
+  .relatedHeading {
+    margin-bottom: 22px;
+  }
+
+  .relatedCard {
+    flex-basis: 82%;
+  }
+
+  .relatedGrid {
+    gap: 14px;
+    padding-right: 10px;
+  }
+}

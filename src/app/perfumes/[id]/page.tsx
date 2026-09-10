@@ -54,6 +54,7 @@ function ProductDetailPage() {
 
   const touchStartX = useRef<number | null>(null);
   const ignoreClick = useRef(false);
+  const relatedRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,14 +80,45 @@ function ProductDetailPage() {
         document.title = `${converted.name} | Dorah`;
 
         try {
-          const sameCategory = await fetchPublicProducts(row.category);
+          const source = decantMode
+            ? await fetchPublicDecants()
+            : await fetchPublicProducts(row.category);
+
           if (!cancelled) {
-            const candidates = sameCategory.filter((item) => item.id !== row.id);
-            const relevant = row.gender
+            const candidates = source.filter((item) => item.id !== row.id);
+            const sameGender = row.gender
               ? candidates.filter((item) => item.gender === row.gender)
               : candidates;
+            const otherGender = row.gender
+              ? candidates.filter((item) => item.gender !== row.gender)
+              : [];
 
-            setRelated(relevant.slice(0, 4).map((item) => ({ ...dbProductToSiteProduct(item), ...(decantMode ? { category: "decants" as const } : {}) })));
+            // Mezcla estable por producto: cada ficha muestra una selección distinta,
+            // sin que las tarjetas cambien de lugar durante la navegación.
+            const seed = Array.from(row.id).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            const shuffled = (items: typeof candidates, salt: number) =>
+              [...items]
+                .map((item, index) => ({
+                  item,
+                  score: Array.from(`${item.id}-${seed + salt + index}`).reduce(
+                    (acc, char) => (acc * 33 + char.charCodeAt(0)) >>> 0,
+                    5381
+                  ),
+                }))
+                .sort((a, b) => a.score - b.score)
+                .map(({ item }) => item);
+
+            const picked = [
+              ...shuffled(sameGender, 17),
+              ...shuffled(otherGender, 71),
+            ].slice(0, 8);
+
+            setRelated(
+              picked.map((item) => ({
+                ...dbProductToSiteProduct(item),
+                ...(decantMode ? { category: "decants" as const } : {}),
+              }))
+            );
           }
         } catch (error) {
           console.error("No se pudieron cargar productos relacionados:", error);
@@ -229,14 +261,13 @@ function ProductDetailPage() {
     router.push(returnToCatalogHref);
   }
 
-  const relatedGridClass =
-    related.length === 1
-      ? `${styles.relatedGrid} ${styles.relatedGridOne}`
-      : related.length === 2
-        ? `${styles.relatedGrid} ${styles.relatedGridTwo}`
-        : related.length === 3
-          ? `${styles.relatedGrid} ${styles.relatedGridThree}`
-          : `${styles.relatedGrid} ${styles.relatedGridFour}`;
+  function scrollRelated(direction: -1 | 1) {
+    const track = relatedRef.current;
+    if (!track) return;
+    const card = track.querySelector<HTMLElement>("a");
+    const step = card ? card.offsetWidth + 18 : track.clientWidth * 0.8;
+    track.scrollBy({ left: direction * step, behavior: "smooth" });
+  }
 
   return (
     <>
@@ -496,14 +527,28 @@ function ProductDetailPage() {
               <h2>Descubrí otras opciones</h2>
             </div>
 
-            <div className={relatedGridClass}>
+            <div className={styles.relatedCarousel}>
+              <button
+                type="button"
+                className={`${styles.relatedArrow} ${styles.relatedArrowPrev}`}
+                onClick={() => scrollRelated(-1)}
+                aria-label="Ver opciones anteriores"
+              >
+                ‹
+              </button>
+
+              <div className={styles.relatedGrid} ref={relatedRef}>
               {related.map((item) => {
                 const image = item.images?.[0];
                 const relatedPrice = item.category === "decants" ? item.price5ml : item.price;
                 const relatedConsult = needsConsult(relatedPrice);
 
                 return (
-                  <Link key={item.id} href={`/perfumes/${item.id}`} className={styles.relatedCard}>
+                  <Link
+                    key={item.id}
+                    href={`/perfumes/${item.id}${decantMode ? "?format=decant" : ""}`}
+                    className={styles.relatedCard}
+                  >
                     <div className={styles.relatedImage}>
                       {image ? (
                         <Image
@@ -523,6 +568,16 @@ function ProductDetailPage() {
                   </Link>
                 );
               })}
+              </div>
+
+              <button
+                type="button"
+                className={`${styles.relatedArrow} ${styles.relatedArrowNext}`}
+                onClick={() => scrollRelated(1)}
+                aria-label="Ver más opciones"
+              >
+                ›
+              </button>
             </div>
           </section>
         )}
