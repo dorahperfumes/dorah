@@ -6,7 +6,7 @@ import { useCart } from "@/lib/cart-context";
 import Link from "next/link";
 import { BottleIcon } from "./icons";
 import ProductCardGallery from "./ProductCardGallery";
-import { consultStockLink, needsConsult } from "@/lib/whatsapp";
+import { needsConsult, consultDecantLink } from "@/lib/whatsapp";
 import styles from "./CatalogSections.module.css";
 
 const GENDER_LABELS: Record<string, string> = {
@@ -132,7 +132,7 @@ export default function DecantGrid({ products }: { products: Product[] }) {
           {consult ? (
             <a
               className="card-cta"
-              href={consultStockLink(p.name, `${size}ml`)}
+              href={consultDecantLink(p, `${size}ml` as "5ml" | "10ml")}
               target="_blank"
               rel="noopener noreferrer"
              

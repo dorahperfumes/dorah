@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Product } from "@/lib/types";
-import { consultStockLink, needsConsult } from "@/lib/whatsapp";
+import { consultProductLink, consultDecantLink, needsConsult } from "@/lib/whatsapp";
 
 const GENDER_LABELS: Record<string, string> = {
   hombre: "Para hombre",
@@ -116,7 +116,7 @@ export default function ProductDetailModal({
                 {needsConsult(size === "5ml" ? product.price5ml : product.price10ml) ? (
                   <a
                     className="detail-price consult-link"
-                    href={consultStockLink(product.name, size)}
+                    href={consultDecantLink(product, `${size}ml` as "5ml" | "10ml")}
                   >
                     Consultar stock
                   </a>
@@ -125,7 +125,7 @@ export default function ProductDetailModal({
                 )}
               </>
             ) : needsConsult(product.price) ? (
-              <a className="detail-price consult-link" href={consultStockLink(product.name)}>
+              <a className="detail-price consult-link" href={consultProductLink(product)}>
                 Consultar stock
               </a>
             ) : (
@@ -136,7 +136,7 @@ export default function ProductDetailModal({
               {(isDecant ? needsConsult(size === "5ml" ? product.price5ml : product.price10ml) : needsConsult(product.price)) ? (
                 <a
                   className="detail-cta"
-                  href={consultStockLink(product.name, isDecant ? size : undefined)}
+                  href={isDecant ? consultDecantLink(product, `${size}ml` as "5ml" | "10ml") : consultProductLink(product)}
                   style={{ textAlign: "center", textDecoration: "none" }}
                 >
                   Consultar por WhatsApp

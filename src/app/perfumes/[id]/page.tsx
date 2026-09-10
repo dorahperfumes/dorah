@@ -15,7 +15,7 @@ import {
   fetchPublicDecants,
 } from "@/lib/products-db";
 import type { Product } from "@/lib/types";
-import { consultStockLink, needsConsult } from "@/lib/whatsapp";
+import { consultProductLink, consultDecantLink, needsConsult } from "@/lib/whatsapp";
 import styles from "./page.module.css";
 
 const GENDER_LABELS: Record<string, string> = {
@@ -218,7 +218,9 @@ function ProductDetailPage() {
     );
   }
 
-  const whatsappHref = consultStockLink(product.name, isDecant ? size : undefined);
+  const whatsappHref = isDecant
+    ? consultDecantLink(product, `${size}ml` as "5ml" | "10ml")
+    : consultProductLink(product);
   const returnToCatalogHref = `/?section=${encodeURIComponent(product.category)}${
     product.gender ? `&gender=${encodeURIComponent(product.gender)}` : ""
   }`;

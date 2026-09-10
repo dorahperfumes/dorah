@@ -6,7 +6,7 @@ import { useCart } from "@/lib/cart-context";
 import Link from "next/link";
 import { BottleIcon, RingIcon } from "./icons";
 import ProductCardGallery from "./ProductCardGallery";
-import { consultStockLink, needsConsult } from "@/lib/whatsapp";
+import { consultProductLink, needsConsult } from "@/lib/whatsapp";
 import styles from "./CatalogSections.module.css";
 
 const GENDER_LABELS: Record<string, string> = {
@@ -117,7 +117,7 @@ export default function ProductGrid({
           {consult ? (
             <a
               className="card-cta"
-              href={consultStockLink(p.name)}
+              href={consultProductLink(p)}
               target="_blank"
               rel="noopener noreferrer"
              
