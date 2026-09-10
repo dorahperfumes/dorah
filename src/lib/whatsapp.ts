@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = "5493532400597";
+const WHATSAPP_NUMBER = "5493624107224";
 
 export function needsConsult(
   value: number | string | null | undefined
