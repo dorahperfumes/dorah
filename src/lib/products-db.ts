@@ -56,6 +56,42 @@ export async function fetchPublicProducts(category: DBCategory): Promise<DBProdu
   return data as DBProduct[];
 }
 
+/**
+ * Decants públicos.
+ * Incluye perfumes Árabes/Diseñador habilitados por 5/10 ml y mantiene
+ * compatibilidad con los decants antiguos mientras se completa la migración.
+ */
+export async function fetchPublicDecants(): Promise<DBProduct[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .in("category", ["arabes", "disenador", "decants"])
+    .eq("active", true)
+    .or("active_5ml.eq.true,active_10ml.eq.true")
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+
+  const rows = ((data ?? []) as DBProduct[]).filter(
+    (item) =>
+      (item.active_5ml && item.price_5ml != null) ||
+      (item.active_10ml && item.price_10ml != null)
+  );
+
+  const key = (item: DBProduct) =>
+    `${(item.brand || "").trim().toLocaleLowerCase("es")}::${item.name.trim().toLocaleLowerCase("es")}`;
+
+  // Si existe el perfume original y un decant legado con el mismo nombre/marca,
+  // priorizamos el perfume original para evitar mostrarlo dos veces.
+  const unifiedKeys = new Set(
+    rows.filter((item) => item.category !== "decants").map(key)
+  );
+
+  return rows.filter(
+    (item) => item.category !== "decants" || !unifiedKeys.has(key(item))
+  );
+}
+
 /** Todos los productos de una categoría (activos y pausados), para el admin. */
 export async function fetchAdminProducts(category: DBCategory): Promise<DBProduct[]> {
   const { data, error } = await supabase

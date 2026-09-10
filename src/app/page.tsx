@@ -11,7 +11,7 @@ import DecantGrid from "@/components/DecantGrid";
 import SiteFooter, { FloatingSocial } from "@/components/SiteFooter";
 import type { PageId } from "@/components/PageShell";
 import type { Product } from "@/lib/types";
-import { fetchPublicProducts, dbProductToSiteProduct } from "@/lib/products-db";
+import { fetchPublicProducts, fetchPublicDecants, dbProductToSiteProduct } from "@/lib/products-db";
 
 const VALID_PAGES: PageId[] = [
   "inicio",
@@ -80,13 +80,13 @@ function DorahApp() {
         const [a, d, dc, ac] = await Promise.all([
           fetchPublicProducts("arabes"),
           fetchPublicProducts("disenador"),
-          fetchPublicProducts("decants"),
+          fetchPublicDecants(),
           fetchPublicProducts("accesorios"),
         ]);
 
         setArabes(a.map(dbProductToSiteProduct));
         setDisenador(d.map(dbProductToSiteProduct));
-        setDecants(dc.map(dbProductToSiteProduct));
+        setDecants(dc.map((item) => ({ ...dbProductToSiteProduct(item), category: "decants" as const })));
         setAccesorios(ac.map(dbProductToSiteProduct));
       } catch (err) {
         console.error("No se pudieron cargar los productos de Supabase.", err);

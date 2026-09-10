@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import CartDrawer from "@/components/CartDrawer";
 import SiteFooter, { FloatingSocial } from "@/components/SiteFooter";
 import { CartProvider, useCart } from "@/lib/cart-context";
@@ -12,6 +12,7 @@ import {
   dbProductToSiteProduct,
   fetchPublicProductById,
   fetchPublicProducts,
+  fetchPublicDecants,
 } from "@/lib/products-db";
 import type { Product } from "@/lib/types";
 import { consultStockLink, needsConsult } from "@/lib/whatsapp";
@@ -38,6 +39,8 @@ function money(value?: string) {
 function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const decantMode = searchParams.get("format") === "decant";
   const id = String(params?.id ?? "");
   const { addItem, totalQty, openCart, isOpen, closeCart } = useCart();
 
@@ -83,7 +86,7 @@ function ProductDetailPage() {
               ? candidates.filter((item) => item.gender === row.gender)
               : candidates;
 
-            setRelated(relevant.slice(0, 4).map(dbProductToSiteProduct));
+            setRelated(relevant.slice(0, 4).map((item) => ({ ...dbProductToSiteProduct(item), ...(decantMode ? { category: "decants" as const } : {}) })));
           }
         } catch (error) {
           console.error("No se pudieron cargar productos relacionados:", error);
@@ -105,7 +108,7 @@ function ProductDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, decantMode]);
 
   const images = useMemo(
     () => product?.images?.filter(Boolean) ?? [],

@@ -102,11 +102,11 @@ export default function DecantGrid({ products }: { products: Product[] }) {
           )}
           <span className="brand">{p.brand}</span>
           <h4 className={styles.productTitle}>
-            <Link href={`/perfumes/${p.id}`} className={styles.productTitleLink}>
+            <Link href={`/perfumes/${p.id}?format=decant`} className={styles.productTitleLink}>
               {p.name}
             </Link>
           </h4>
-          <Link href={`/perfumes/${p.id}`} className={styles.detailsLink}>
+          <Link href={`/perfumes/${p.id}?format=decant`} className={styles.detailsLink}>
             Ver ficha completa <span aria-hidden="true">→</span>
           </Link>
 

@@ -57,6 +57,10 @@ function emptySimpleForm() {
     desc: "",
     disponible: true,
     gender: "" as Gender | "",
+    precio5: "",
+    precio10: "",
+    disp5: false,
+    disp10: false,
   };
 }
 
@@ -374,6 +378,10 @@ export default function AdminApp() {
       desc: p.description || "",
       disponible: p.active,
       gender: p.gender || "",
+      precio5: p.price_5ml != null ? String(p.price_5ml) : "",
+      precio10: p.price_10ml != null ? String(p.price_10ml) : "",
+      disp5: p.active_5ml && p.price_5ml != null,
+      disp10: p.active_10ml && p.price_10ml != null,
     });
     setSimplePhotos(photoItemsFromProduct(p));
     setEditingSimpleId(p.id);
@@ -425,6 +433,10 @@ export default function AdminApp() {
       description: simpleForm.desc.trim() || null,
       active: simpleForm.disponible,
       gender: simpleForm.gender || null,
+      price_5ml: simpleCat === "accesorios" ? null : (simpleForm.precio5 ? Number(simpleForm.precio5) : null),
+      price_10ml: simpleCat === "accesorios" ? null : (simpleForm.precio10 ? Number(simpleForm.precio10) : null),
+      active_5ml: simpleCat === "accesorios" ? false : (simpleForm.disp5 && Boolean(simpleForm.precio5)),
+      active_10ml: simpleCat === "accesorios" ? false : (simpleForm.disp10 && Boolean(simpleForm.precio10)),
       image_url: image_urls[0] || null,
       image_urls,
     };
@@ -859,9 +871,9 @@ async function saveDecant() {
               <div>
                 <span className="section-kicker">GESTIÓN DE CATÁLOGO</span>
                 <h2>Decants</h2>
-                <p className="sub">Controlá precios y disponibilidad de 5 ml y 10 ml.</p>
+                <p className="sub">Los nuevos decants se activan editando el perfume original. Esta vista conserva tus decants cargados anteriormente.</p>
               </div>
-              <button className="btn btn-gold" onClick={openNewDecant}>+ Nuevo decant</button>
+              <button className="btn btn-gold" onClick={() => changeView("arabes")}>Activar desde un perfume</button>
             </div>
             {renderFilterBar({ cat: "decants" })}
             <DecantProductList />
@@ -974,6 +986,44 @@ async function saveDecant() {
                   <option value="mujer">Mujer</option>
                   <option value="unisex">Unisex</option>
                 </select>
+              </div>
+            )}
+
+            {simpleCat !== "accesorios" && (
+              <div className="decant-inline-box">
+                <div className="decant-inline-head">
+                  <div>
+                    <strong>Venta por decant</strong>
+                    <small>Usa las mismas fotos, nombre, marca y descripción de este perfume.</small>
+                  </div>
+                  <span>{simpleForm.disp5 || simpleForm.disp10 ? "ACTIVO" : "OPCIONAL"}</span>
+                </div>
+
+                <div className="size-fields">
+                  <div className="size-card">
+                    <strong>5 ml</strong>
+                    <div className="field">
+                      <label>Precio</label>
+                      <input type="number" inputMode="decimal" placeholder="0" value={simpleForm.precio5} onChange={(e) => setSimpleForm((f) => ({ ...f, precio5: e.target.value }))} />
+                    </div>
+                    <div className="mini-switch-row">
+                      <span>Mostrar en Decants</span>
+                      <label className="switch"><input type="checkbox" checked={simpleForm.disp5} onChange={(e) => setSimpleForm((f) => ({ ...f, disp5: e.target.checked }))} /><span className="slider" /></label>
+                    </div>
+                  </div>
+
+                  <div className="size-card">
+                    <strong>10 ml</strong>
+                    <div className="field">
+                      <label>Precio</label>
+                      <input type="number" inputMode="decimal" placeholder="0" value={simpleForm.precio10} onChange={(e) => setSimpleForm((f) => ({ ...f, precio10: e.target.value }))} />
+                    </div>
+                    <div className="mini-switch-row">
+                      <span>Mostrar en Decants</span>
+                      <label className="switch"><input type="checkbox" checked={simpleForm.disp10} onChange={(e) => setSimpleForm((f) => ({ ...f, disp10: e.target.checked }))} /><span className="slider" /></label>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 

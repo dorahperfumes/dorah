@@ -888,3 +888,38 @@
     grid-column: auto;
   }
 }
+
+
+/* Admin V2.1 — un perfume, múltiples formatos */
+.admin-root .decant-inline-box {
+  margin-top: 4px;
+  padding: 18px;
+  border: 1px solid rgba(196, 154, 75, .34);
+  border-radius: 14px;
+  background: rgba(196, 154, 75, .055);
+}
+.admin-root .decant-inline-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.admin-root .decant-inline-head > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.admin-root .decant-inline-head strong { font-size: 14px; }
+.admin-root .decant-inline-head small { color: #777; line-height: 1.35; }
+.admin-root .decant-inline-head > span {
+  flex: 0 0 auto;
+  font-size: 10px;
+  letter-spacing: .12em;
+  font-weight: 700;
+  color: #8b692c;
+}
+@media (max-width: 640px) {
+  .admin-root .decant-inline-box { padding: 14px; }
+  .admin-root .decant-inline-head { align-items: flex-start; }
+}
